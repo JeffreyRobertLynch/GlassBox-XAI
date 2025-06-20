@@ -10,7 +10,7 @@ Three models were trained for different specializations. All three models can be
 - Custom **Attention U-Net** architecture for segmentation.
 - End-to-end workflow: preprocessing, training, evaluation, and XAI.
 - High production-level metrics (Dice, IoU, Recall, Precision, F1).
-- Model variants to explore Recall optimization vs. balanced performance.
+- Model variants to explore Dice optimization vs. Recall optimization vs. balanced performance.
 - XAI tools: Grad-CAM, Integrated Gradients, Saliency Maps, and more.
 - Focused on **regulatory compliance**, decision support, and **human-in-the-loop** workflows.
 
