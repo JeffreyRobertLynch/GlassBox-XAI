@@ -70,3 +70,7 @@ A recorded **tech demo** will walk through:
 
 ## Author
 [LinkedIn](https://www.linkedin.com/in/jeffrey-lynch-350930348)
+
+## License
+
+This project is licensed under the MIT License — see the LICENSE file for details.
