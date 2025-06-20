@@ -73,4 +73,4 @@ A recorded **tech demo** will walk through:
 
 ## License
 
-This project is licensed under the MIT License — see the LICENSE file for details.
+This project is for educational and demonstration purposes only. For commercial use, please contact the author.
