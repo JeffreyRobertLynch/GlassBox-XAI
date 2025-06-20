@@ -69,7 +69,7 @@ A recorded **tech demo** will walk through:
 - How to build explainable, regulatory-ready medical AI
 
 ## Author
-Jeffrey Robert Lynch [LinkedIn](https://www.linkedin.com/in/jeffrey-lynch-350930348)
+**Jeffrey Robert Lynch** [LinkedIn](https://www.linkedin.com/in/jeffrey-lynch-350930348)
 
 ## License
 
