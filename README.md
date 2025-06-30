@@ -4,7 +4,7 @@ Attention U-Net for Medical Image Segmentation with XAI Suite
 ## Overview
 Advanced binary segmentation model trained on the ISIC 2018 dataset. Built for high performance and full transparency via a robust explainable AI (XAI) suite. 
 
-Three models were trained for different specializations. All three models can be easily used for image processing and their outputs compared directly to one another in terms of visuals and metrics.
+Three models were trained for different specializations. All three models can be easily used for image processing and their outputs compared directly to one another in visuals and metrics.
 
 ## Key Features
 - Custom **Attention U-Net** architecture for segmentation.
