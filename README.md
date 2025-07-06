@@ -1,7 +1,7 @@
 # GlassBox-XAI
 Attention U-Net for Medical Image Segmentation with XAI Suite  
 
-**Disclaimer: This is not a medical device and not intended for diagnosis or treatment. The results shown reflect performance on the curated ISIC 2018 test set (~1,000 images) and have not been evaluated for clinical use.**
+**Disclaimer: This project is for research and demonstration purposes only. It is not a medical device and is not intended for clinical use, diagnosis, or treatment. All medical images are from the anonymized, public ISIC 2018 dataset and contain no PHI.**
 
 ---
 
@@ -51,9 +51,9 @@ Building transparent AI is essential, not optional, for clinical adoption:
 - **Model Architecture:** Custom-built U-Net architecture with added attention mechanisms, dropout, and regularization. 
 - **Training Pipeline:** Modular data augmentation, augmentation testing, custom loss functions, callbacks, and fine-tuning at lower learning rate for variant specialization.  
 - **Model Variants:**
-  - *Dice-Optimized* — maximizes boundary accuracy  
-  - *Recall-Optimized* — minimizes false negatives  
+  - *Dice-Optimized* — maximizes boundary accuracy   
   - *Balanced* — balances false positives and false negatives
+  - *Recall-Optimized* — minimizes false negatives 
 - **Evaluation:** Dice Score (Dice), Intersection of Union (IoU), Precision, Recall, Pixel Accuracy, and F1 Score. Metric definitions can be found in the "Models" section. 
 - **XAI Integration:** XAI tools inspect internal decision-making at a more granular level for interpretability. These features are visualized and explained in the "Key Features" and "XAI Suite" sections.
 
@@ -61,7 +61,7 @@ Building transparent AI is essential, not optional, for clinical adoption:
 - **Performance:** *Dice-Optimized* model achieved a Dice Score of ~0.875 and an IoU score of ~0.8, matching or outperforming top 2018 solutions. Other models achieved similarly high performance within their optimization goals. Full information on performance for all models can be seen in the "Key Features" and "Models" sections.
 - **Auditability & Reproducibility:** Transparent, portable, and transferrable workflow with clear audit trail.
 - **Security:** Entire process remains on-device, protecting PHI from data leakage or breaches.
-- **XAI Integration:** GlassBox XAI is not a "black box" model. Each model’s base output is a binary mask outlining lesion vs. non-lesion regions. This can be used for detecting lesions, measuring the growth or retraction of lesions over time, and supporting clinical & surgical decisions. Beyond this, XAI features provide multi-model comparisons, confidence matrices, confidence maps, saliency maps, Grad-CAM, integrated gradients, and full end to end layer visualization. These visualization features, described in full in the "XAI Suite" section, enhance interpretability, trust, and regulatory compliance.
+- **XAI Integration:** GlassBox XAI is not a "black box" model. Each model’s base output is a binary mask outlining lesion vs. non-lesion regions. This can be used for detecting lesions, measuring the growth or retraction of lesions over time, and supporting clinical & surgical decisions. Beyond this, XAI features provide multi-model comparisons, confusion matrices, confidence maps, saliency maps, Grad-CAM, integrated gradients, and full end to end layer visualization. These visualization features, described in full in the "XAI Suite" section, enhance interpretability, trust, and regulatory compliance.
 
 ### Conclusions
 GlassBox XAI demonstrates that **production-level segmentation performance** can be achieved on modest hardware without the use of pretrained models, black box limitations, or privacy trade-offs. This makes the solution deployable in local settings (e.g., clinics, research hospitals) where data security and transparency are essential.
@@ -72,9 +72,25 @@ The trade-offs of these techniques are discussed in the "Future Work" section.
 
 ---
 
-## Key Features
+## Data Ethics & Full Disclaimer
+**This project is for research and demonstration purposes only. It is not a medical device and is not intended for clinical use, diagnosis, or treatment.**
 
-These screenshots show the functionality of GlassBox AI. All features can be used with all three models, but these screenshots will focus primarily on Model 1 (Dice-Optimized), to avoid redundancy.
+**All medical images shown below are part of the ISIC 2018 Challenge Dataset, a publicly released and anonymized dataset curated for research. No private health information (PHI) is present.**
+
+**Results presented are generated automatically by deep learning models, and their accuracy is benchmarked using the ISIC-provided test set, not through real-world clinical evaluation.**
+
+**This solution has not undergone clinical validation or regulatory review.**
+
+**Visualizations (e.g., masks, heatmaps, Grad-CAM) are interpretability tools, not clinical indicators.**
+
+**This project does not offer diagnostic guidance and should not be used as such.**
+
+Please refer to the ISIC 2018 dataset license and usage guidelines for full dataset attribution and terms of use.
+
+---
+
+## Key Features
+These screenshots show the functionality of GlassBox XAI. All features can be used with all three models, but these screenshots will focus primarily on Model 1 (Dice-Optimized), to avoid redundancy.
 
 ### Batch Segmentation & Visualization - Model 1
 
@@ -82,7 +98,7 @@ These screenshots show the functionality of GlassBox AI. All features can be use
 
 ### Model Performance Evaluation on Test Set - Model 1, Model 2, Model 3
 
-### Confusion Matrices - Model 1
+### Confusion Matrices - Model 1, Model 2, Model 3
 
 ### Pixel Confidence Heatmap - Model 1
 
@@ -103,54 +119,62 @@ These screenshots show the functionality of GlassBox AI. All features can be use
 ---
 
 ## Data
-Curation.
-Anonymized. 
-No PHI. 
-2600 images & masks.
-Training.
-Testing.
+This project uses the publicly available, anonymized dataset from ISIC 2018: Task 1 - Lesion Segmentation, a globally recognized benchmark for skin lesion segmentation. See "Credits & References" section for direct links to the International Skin Image Collaboration (ISIC) website. 
+
+- **High-Quality Curation:** The dataset was contributed by a consortium of international dermatology clinics and academic institutions. It includes dermoscopic images collected under expert supervision, making it a clinically relevant and representative dataset.
+
+- **Anonymized & PHI-Free:** All images are de-identified and publicly released under ISIC’s data use policy. No patient-identifiable information or Protected Health Information (PHI) is present in the dataset.
+
+- **Dataset Composition:** ~2,600 images and their corresponding binary lesion masks. Includes a wide range of skin tones, lighting conditions, lesion types, and occlusions (e.g., hair, ruler marks).
+
+- **Split Integrity Maintained:** The original Training, Validation, and Test splits were strictly preserved. No data leakage between splits. This ensures that reported performance can be directly compared to past and future solutions.
+
+- **Testing & Metrics:** During evaluation, the models' predicted segmentation masks are directly compared to the ground truth segmentation masks created by domain experts. All reported metrics — such as Dice Score, IoU, and Pixel Accuracy — are computed from this pixel-level comparison on the official test set.
+
+- **Why This Matters:** High performance on this benchmark — without pretrained models or external datasets — suggests strong model generalization and real-world potential, even under resource-constrained, on-device conditions. The ISIC dataset continues to serve as a standard in dermatological AI research, and results on this set remain a meaningful indicator of segmentation quality, clinical alignment, and benchmarking rigor.
 
 ---
 
 ## Models & Metrics
 
 ### Architecture
-- All models were trained from scratch on freshly initialized custom architecture.
-- All models use the same U-Net architecture with added attention mechanisms.
-- Layer normalization, regularization, dropout were implemented. 
-- Each model was fine-tuned using custom loss functions: Dice Loss, Tversky Loss, and Hybrid Dice-Tversky Loss.
+- All models use the same custom-built U-Net architecture with added attention mechanisms.
+- Each was trained from scratch on only ISIC 2018 data, no pretrained models.
+- Regularization techniques including layer normalization and dropout were applied to reduce overfitting.
+- Each variant was fine-tuned using different loss functions: Dice Loss, Tversky Loss, or Hybrid Dice-Tversky Loss.
 
 ---
 
-### Performance Metrics
-- **Dice Coefficient:**	            Measures overlap between prediction and ground truth. More tolerant of small errors in large lesions, less tolerant of errors in small lesions. Ideal for clinical segmentation.
-- **Intersection over Union (IoU):**	Stricter overlap metric. Penalizes all misalignments equally, which may underrepresent small lesions.
-- **Recall (Sensitivity):**	        Measures how many true positives were correctly identified. Key to avoiding missed disease areas.
-- **Precision:**	                    Measures how many true negatives were correctly identified. Helps reduce false positives.
-- **F1 Score:**	                    Harmonic mean of precision and recall. Balances false negatives and false positives.
-- **Pixel Accuracy:**	              Overall proportion of correctly labeled pixels. Can be misleading in class-imbalanced datasets like medical imaging.
+### Metrics Explained
+- **Dice Coefficient** measures how well the predicted lesion area overlaps with the actual lesion. IT is especially sensitive to errors in small lesions and is a standard metric in medical image segmentation.
+- **Intersection over Union (IoU)**	is a stricter version of Dice. Penalizes all boundary mismatches equally, which can underrepresent small or subtle lesions.
+- **Recall (Sensitivity)** measures how well the model captures all lesion areas. Crucial in medical contexts, where missing even a small lesion could be risky.
+- **Precision**	measures how many predicted lesion areas were correct. Helps avoid false alarms that could lead to unnecessary concern or procedures.
+- **F1 Score** balances precision and recall. Useful when both missing and over-detecting lesions have consequences.
+- **Pixel Accuracy** shows the overall percentage of correctly labeled pixels. Can be misleading in medical imaging, where lesions may be a small part of the image.
+
+**All metrics contribute to measuring performance, but Dice is emphasized due to its greater alignment with decision-support needs and regulatory expectations.**
 
 ### Model Performance Comparison
 
-| Model        	 | Dice     | IoU      | Precision| Recall   |Pixel Acc | F1 Score |
+
+| Model        	 | Dice     | IoU      | Precision| Recall   |Pixel Accuracy | F1 Score |
 |----------------|----------|----------|----------|----------|----------|----------|
-| Dice-Optimized | 0.8751   | 0.8000   | 0.9028   | 0.8291   | 0.9272   | 0.8644   |
-| Balanced       | 0.8735   | 0.7926   | 0.8790   | 0.8561   | 0.9267   | 0.8674   |
-|Recall-Optimized| 0.8575   | 0.7672   | 0.8286   | 0.8932   | 0.9184   | 0.8597   |
+| Dice-Optimized | **0.8751**   | **0.8000**   | **0.9028**   | 0.8291   | **0.9272**   | 0.8644   |
+| Balance-Optimized | 0.8734   | 0.7925   | 0.8787   | 0.8564   | 0.9267   | **0.8674**   |
+| Recall-Optimized | 0.8573   | 0.7669   | 0.8280   | **0.8936**   | 0.9182   | 0.8595   |
 
 #### Why Optimize for Dice?
-Missing small lesions can have serious clinical consequences. Metrics like IoU tend to underrepresent performance on small structures due to their strict penalty on partial overlaps. Dice Coefficient was prioritized as the primary performance metric because it:
+This model is the best general performer across metrics. Metrics like IoU tend to underrepresent performance on small structures due to their strict penalty on partial overlaps. Dice Coefficient was prioritized as the primary performance metric because it:
 - Responds better to small object overlap
 - Places less weight on boundary errors for large lesions
 - Reflects clinical priorities: it’s better to detect a lesion imperfectly than to miss it entirely
 
-**All metrics were reported for benchmarking, but Dice is emphasized due to its greater alignment with decision-support needs and regulatory expectations.**
-
 #### Why Balance Recall - Precision?
-This model prioritizes balancing false positives and false negatives, making its overall F1 Score (average of Precision and Recall) slightly higher than the other two models.
+This model prioritizes balancing false positives (over-detection) and false negatives (under-detection), achieving the highest F1 Score (harmonic mean of Precision and Recall). Suited for scenarios where over-detection and under-detection both carry risks. 
 
 #### Why Optimize for Recall?
-This model prioritizes minimizing false negatives above all else. This sensitivity also makes it the most likely to produce false positives as a tradeoff.  
+This model prioritizes minimizing false negatives to maximize sensitivity. It is designed to catch every possible lesion, erring on the side of over-detection. Suited for scenarios where missing lesion is unacceptable, even if it produces false positives.
 
 ---
 
@@ -164,24 +188,35 @@ This model prioritizes minimizing false negatives above all else. This sensitivi
 
 ---
 
-## Modular Image Processing
-Challenge of aligning images and masks during flipping, rotation, and zoom transformations. Post augmentation, Pretraining testing.
-Random Transformations within narrow boundaries for realistic image augmentations.
-Zoom
-Rotation
-Flip
-Saturation
-Hue
-Contrast
-Gamma
-Brightness
-Noise
-Blur
-Dilation
-Erosion
-Edge Detection
-Histogram Equalization
-CLAHE
+## Image Processing Pipeline
+A pre-processing and augmentation pipeline was developed to support both training-time and test-time experimentation. This enabled flexible trials of various techniques to enhance robustness, generalization, and fairness. While the final reported metrics were obtained on the **unaltered test set** (no pre-processing), several preprocessing techniques showed potential for improved generalization under specific conditions.
+
+### Image-Mask Alignment
+One of the key technical challenges in medical segmentation pipelines is ensuring perfect alignment between input images and their corresponding ground truth masks during data augmentation. Any mismatch — even a pixel shift — would corrupt the learning signal.
+
+All geometric transformations (e.g., flipping, rotation, zoom) were applied using a shared random seed to ensure deterministic, mirrored changes to both images and masks. A post-transformation visual verification step was used during development to confirm correct alignment before training. Scripts were created to validate alignment before long training runs, which proved crucial for early-stage debugging.
+
+### Modular Pipeline Design
+The pipeline was built using a modular architecture, allowing toggling of transformations on or off, and setting boundaries (min/max intensity, rotation angles, etc.) from parameter inputs. This design enabled rapid iteration and testing.
+
+### Techniques
+- Brightness
+- Color Saturation
+- Contrast
+- Contrast Limited Adaptive Histogram Equalization (CLAHE)
+- Dilation
+- Edge Detection
+- Erosion
+- Gamma
+- Gaussian Blur
+- Gaussian Noise
+- Horizontal Flip
+- Hue Shift
+- Rotation
+- Vertical Flip
+- Zoom
+
+The final pipeline design prioritized reproducibility, modularity, and realism to enable efficient experimentation without compromising clinical plausibility.
 
 ---
 
@@ -192,7 +227,7 @@ CLAHE
 ### Modular Data Augmentation
 ### Custom Loss Functions
 ### Initial Training
-### Final Tuning
+### Fine-Tuning
 ### Evaluation
 ### Mask Overlay Visualization
 ### Preprocessing Experimentation
@@ -203,34 +238,60 @@ CLAHE
 
 ## Future Work
 ### Performance Improvement
-Optimize Data Augmentation
-Ensemble Models
-Vision Transformers
-Expand Training Data
-Pre-Trained Models
+GlassBox XAI has several avenues for improving model performance with tradeoffs in interpretability, development time, on-device feasibility, and computational cost. Improving Dice performance from 0.875 to 0.9 is achievable if we expand training data beyond the relatively small ISIC 2018 set and optimize data augmentation during training. Improvement beyond this is achievable as well, but would require more time and computational complexity. For example, an ensemble combining a high-performing Attention U-Net with architecturally diverse models could match the performance of 2024 state-of-the-art solutions while remaining relatively lightweight compared to transformer-based systems.
 
-### Subject Matter Expert Review & Collaboration
-Integration with Workflows
-UI and UX Development
-Additional XAI and HITL Features
+- **Optimize Data Augmentation**
+More advanced or domain-specific augmentation strategies could improve generalization. This would require more experimentation or domain expert collaboration.
+
+- **Expand Training Data**
+Incorporating more expert-annotated images from trusted sources (e.g., HAM10000) could improve model performance and reduce bias. This would be the most efficient way to improve metrics, and would have been prioritized in this iteration, but we constrained ourselves to using only the unaltered ISIC 2018 dataset for training.
+
+- **Ensemble Models**
+Combining the strengths of multiple models via ensembling or model averaging could improve overall performance, but increases inference time and complexity. While ensembling the three variant models in GlassBox XAI is technically possible, their shared architecture limits the diversity of learned representations, likely resulting in minimal gains. Greater benefits would be expected from ensembling architecturally diverse models.
+
+- **Vision Transformers**
+Transformer-based architectures have shown state-of-the-art performance in medical imaging tasks. Exploring these could improve segmentation performance. However, they generally require large-scale training data to outperform CNN-based models. Limited to relatively small datasets like ISIC 2018, their advantage may be reduced.
+
+- **Pre-Trained Models**
+Using pretrained encoders or models may accelerate convergence and improve performance, though it may reduce transparency and regulatory compliance if training data is not fully auditable. Additionally, most pretrained models require licensing agreements for full production deployment.
+
+### Subject Matter Expert Collaboration
+For GlassBox XAI to transition from proof-of-concept to clinical utility, collaboration with dermatology experts is essential.
+
+- **Clinical Workflow Integration**
+Partnering with dermatologists and clinical advisors can help validate real-world use cases, assess model performance in clinical settings, and identify opportunities for workflow integration and decision support.
+
+- **UI/UX Development**
+Building user interfaces tailored to clinical or educational use could improve usability for XAI visualizations. Integrating GlassBox XAI with clinical tools and EHR systems could further enhance its utility in real-world workflows.
+
+- **Expanded XAI & Human-in-the-Loop (HITL) Tools**
+Designing tools that allow experts to explore model reasoning, suggest corrections, and highlight edge cases could improve trust, enable targeted retraining, and accelerate model refinement through human-in-the-loop feedback.
 
 ---
 
 ## Tech Stack & Dependencies
-- Python
-- Anaconda
-- Jupyter Notebook
-- TensorFlow
-- Keras
-- NumPy
-- Pandas
-- Matplotlib
-- OpenCV
-- Seaborn
-- Tqdm
-- ISIC 2018 Challenge Dataset
+
+This project was developed and executed entirely in a Jupyter Notebook environment using the following tools and libraries:
+
+- Python - Core programming language
+- Anaconda - Environment and dependency management
+- Jupyter Notebook - Development and experimentation environment
+- TensorFlow / Keras - Architecture, training, evaluation, metrics, pre-processing, Grad-CAM
+- NumPy - Numerical operations, arrays, data handling
+- Matplotlib / Seaborn - Data visualization
+- Scikit-learn - Confusion matrices, metrics
+- Scikit-image - Superpixel confidence mapping
+- Albyumentations / OpenCV / SciPy - Image pre-processing, data augmentation, transformations
+- Tqdm - Custom progress tracking
+- ISIC 2018 Challenge Dataset - Benchmark dataset for training and evaluation
 
 ## Credits & References
+
+This project uses data from the ISIC 2018: Task 1 – Lesion Segmentation challenge. All images and masks are publicly available, de-identified, and used here under the ISIC data use policy for research and educational purposes.
+
+[1] Noel Codella, Veronica Rotemberg, Philipp Tschandl, M. Emre Celebi, Stephen Dusza, David Gutman, Brian Helba, Aadi Kalloo, Konstantinos Liopyris, Michael Marchetti, Harald Kittler, Allan Halpern: "Skin Lesion Analysis Toward Melanoma Detection 2018: A Challenge Hosted by the International Skin Imaging Collaboration (ISIC)", 2018; https://arxiv.org/abs/1902.03368
+
+[2] Tschandl, P., Rosendahl, C. & Kittler, H. The HAM10000 dataset, a large collection of multi-source dermatoscopic images of common pigmented skin lesions. Sci. Data 5, 180161 doi:10.1038/sdata.2018.161 (2018).
 
 ## Author
 **Jeffrey Robert Lynch** [LinkedIn](https://www.linkedin.com/in/jeffrey-lynch-350930348)
