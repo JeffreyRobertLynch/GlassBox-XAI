@@ -14,14 +14,14 @@ This project focuses on **automated binary segmentation of skin lesions** in med
 
 - **Clinical Workflows:** Integrating into Computer-Aided Diagnosis (CAD) tools.
 
-Unlike simple classification, which only states "lesion present," accurate segmentation reveals shape irregularities and precise border limits, aiding biopsy guidance and treatment decisions.
+Unlike simple classification, which only states "lesion present", accurate segmentation reveals shape irregularities and precise border limits, aiding biopsy guidance and treatment decisions.
 
 ### Why Explainability (XAI) Is Critical in Healthcare AI
 Building transparent AI is essential, not optional, for clinical adoption:
 
 - **Clinician Trust & Collaboration:** Tools like saliency and Grad‑CAM heatmaps help clinicians understand how and why the model made a specific decision, including the model's confidence level at the pixel level. This supports human-in-the-loop (HITL) workflows and informed decision-making. 
 
-- **Regulatory & Ethical Compliance:** XAI is increasingly required for medical device approval and supports bias detection, auditability,  and safe deployment.
+- **Regulatory & Ethical Compliance:** XAI is increasingly required for medical device approval and supports bias detection, auditability, and safe deployment.
 
 - **Model Validation & Iterative Improvement:** Visual explanations enable SME feedback loops, critical for clinical trials, continuous improvement, and device certification.
 
@@ -32,7 +32,7 @@ Building transparent AI is essential, not optional, for clinical adoption:
 ## Solution Overview
 
 ### Objective & Scope
-- Build a from-scratch solution to ISIC 2018, Task 1: Binary Segmentation, that meets or exceeds the performance of top 2018 leaderboard solutions.
+- Build a from-scratch solution to ISIC 2018, Task 1: Binary Segmentation, that matches or outperforms the top 2018 leaderboard solutions.
 - Adhere to the ISIC 2018 challenge dataset splits (Training, Validation, Test) for quantitative performance benchmarking and impose additional limitations for auditability and security.
 - Fine-tune three model variants (Dice-Optimized, Recall-Optimized, Balanced) to support flexible deployment goals.
 - Maintain full auditability, ownership, and replication using a custom architecture and no pretrained models.
@@ -50,20 +50,25 @@ Building transparent AI is essential, not optional, for clinical adoption:
 ### Methodology
 - **Model Architecture:** Custom-built U-Net architecture with added attention mechanisms, dropout, and regularization. 
 - **Training Pipeline:** Modular data augmentation, augmentation testing, custom loss functions, callbacks, and fine-tuning at lower learning rate for variant specialization.  
-- **Model Variants:** Dice-Optimized prioritizes boundary accuracy, Recall-Optimized prioritizes minimizing false negatives, and Balanced prioritizes minimizing false negatives and false positives overall.
-- **Evaluation:** All three models were evaluated and compared using the following metrics: Dice Coefficient, Intersection of Union, Precision, Recall, Pixel Accuracy, and F1 Score. Metric definitions can be found in the "Metric Definition" section. 
-- **XAI Integration:** After initial performance evaluation, XAI features were developed, tested, and integrated to evaluate model decision-making at a more granular level. These features are visualized and explained in the "Key Features" and "XAI Suite" sections.
+- **Model Variants:**
+  - *Dice-Optimized* — maximizes boundary accuracy  
+  - *Recall-Optimized* — minimizes false negatives  
+  - *Balanced* — balances false positives and false negatives
+- **Evaluation:** Dice Score (Dice), Intersection of Union (IoU), Precision, Recall, Pixel Accuracy, and F1 Score. Metric definitions can be found in the "Models" section. 
+- **XAI Integration:** XAI tools inspect internal decision-making at a more granular level for interpretability. These features are visualized and explained in the "Key Features" and "XAI Suite" sections.
 
 ### Results
-- **Performance:** Dice-Optimized (Model 1) achieved a Dice Score of ~0.875 and an IoU score of ~0.8. The other 2 models have similarly high performance metrics within their specializations. This meets or exceeds the performance of 2018 solutions to the problem. Full information on performance for all models can be seen in the "Key Features" and "Models" sections.
-- **Auditability & Reproducibility:** Transparent, portable, and generalizable workflow for medical image segmentation with XAI. Clear audit trail for training data, test data, and evaluation.
-- **Security:** Entire process remains on-device within a controlled environment to protect PHI from data leakage or breaches.
-- **XAI Integration:** Each model's base output is a mask, or outline, delineating what part of the image contains a lesion and what part of the image does not contain a lesion. This can be used for detecting lesions, measuring the growth or retraction of lesions over time, or providing focus for experts. Beyond this, XAI features provide multi-model comparisons, confidence matrices, confidence maps, saliency maps, Grad-CAM, integrated gradients, and full end to end layer visualization. These visualization features, described in full in the "XAI Suite" section, make model decisions transparent, trustworthy, and reviewable. GlassBox AI is not a "black box" model.
+- **Performance:** *Dice-Optimized* model achieved a Dice Score of ~0.875 and an IoU score of ~0.8, matching or outperforming top 2018 solutions. Other models achieved similarly high performance within their optimization goals. Full information on performance for all models can be seen in the "Key Features" and "Models" sections.
+- **Auditability & Reproducibility:** Transparent, portable, and transferrable workflow with clear audit trail.
+- **Security:** Entire process remains on-device, protecting PHI from data leakage or breaches.
+- **XAI Integration:** GlassBox XAI is not a "black box" model. Each model’s base output is a binary mask outlining lesion vs. non-lesion regions. This can be used for detecting lesions, measuring the growth or retraction of lesions over time, and supporting clinical & surgical decisions. Beyond this, XAI features provide multi-model comparisons, confidence matrices, confidence maps, saliency maps, Grad-CAM, integrated gradients, and full end to end layer visualization. These visualization features, described in full in the "XAI Suite" section, enhance interpretability, trust, and regulatory compliance.
 
 ### Conclusions
-GlassBox AI proves that production-level performance segmentation models can be trained, evaluated, and deployed with modest computational resources. This supports local development - models can be trained on local population data to mitigate bias while maintaining information security. This also supports wide deployment - any facility with modest computational resources can locally deploy this solution without relying on complex, and potentially insecure, data chains. Likewise, model ownership and auditability are preserved by avoiding pretrained models. Further, robust XAI features make this solution transparent, trustworthy, and aligned with clinical trials and regulatory evaluation.
+GlassBox XAI demonstrates that **production-level segmentation performance** can be achieved on modest hardware without the use of pretrained models, black box limitations, or privacy trade-offs. This makes the solution deployable in local settings (e.g., clinics, research hospitals) where data security and transparency are essential.
 
-Though GlassBox AI compares favorably with top 2018 solutions in performance and transparency, it is a 2024 solution built on years of progress. 2018 solutions did not have access to an additional 5 years of technical innovation and hindsight. In 2024, some newer solutions outperform GlassBoxAI's metrics - often at the cost of data security, computational complexity, transparency, auditability, and other factors. These new methodologies and techniques, and their trade-offs, will be explored in the "Future Work" section. 
+GlassBox XAI delivers performance on par with or exceeding top 2018 leaderboard entries, while improving transparency, auditability, and deployment feasibility. However, it was produced in 2024 and some 2024-era systems may surpass GlassBox XAI's metrics using larger models, expanded training data, or ensemble learning — but often at the cost of transparency, auditability, security, and accessibility.
+
+The trade-offs of these techniques are discussed in the "Future Work" section.
 
 ---
 
