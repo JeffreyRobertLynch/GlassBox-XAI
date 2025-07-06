@@ -138,7 +138,11 @@ This project uses the publicly available, anonymized dataset from ISIC 2018: Tas
 ## Models & Metrics
 
 ### Architecture
-- All models use the same custom-built U-Net architecture with added attention mechanisms.
+GlassBox XAI uses a custom-built deep learning model based on U-Net, a specialized neural network architecture designed for precise image segmentation. Unlike typical convolutional networks that focus on classification, U-Net is shaped like a “U” and learns to both understand the big picture and recover fine details. It is ideal for identifying lesion boundaries pixel by pixel.
+
+To further improve accuracy, especially in challenging or noisy images, **attention mechanisms** were added. These help the model focus on the most relevant regions in the image, such as lesion edges, while ignoring background distractions like hair or shadows.
+
+- All models use the same custom U-Net architecture with added attention mechanisms.
 - Each was trained from scratch on only ISIC 2018 data, no pretrained models.
 - Regularization techniques including layer normalization and dropout were applied to reduce overfitting.
 - Each variant was fine-tuned using different loss functions: Dice Loss, Tversky Loss, or Hybrid Dice-Tversky Loss.
@@ -221,18 +225,48 @@ The final pipeline design prioritized reproducibility, modularity, and realism t
 ---
 
 ## Key Development Milestones
-### Review Problem & Limitations
-### Review Data
+These milestones reflect not only technical development but iterative experimentation, systematic validation, and a focus on real-world explainability.
+### Problem Scoping & Constraints
+- Defined clinical context, performance needs, and explainability requirements.
+- Chose to exclude pretrained models and external datasets to enforce full transparency and auditability.
+- Prioritized Dice Coefficient as the most clinically relevant metric.
+### Data Review & Integrity
+- Selected ISIC 2018 Challenge: Task 1 dataset for its clinical relevance and benchmark status.
+- Maintained original training, validation, and test splits for reproducibility and fair comparisons.
 ### Model Architecture Design
-### Modular Data Augmentation
+- Built a custom U-Net with attention mechanisms from scratch.
+- Incorporated layer normalization, dropout, and other regularization strategies to reduce overfitting.
+### Modular Augmentation Pipeline
+- Developed a modular image processing pipeline supporting toggled transformations.
+- Solved and validated image-mask alignment through shared random seeds and post-transform verification.
+- Enabled experimentation with transformations.
 ### Custom Loss Functions
+- Implemented and compared Dice Loss, Tversky Loss, and a hybrid Dice–Tversky Loss to optimize for various clinical priorities.
+- Aligned loss strategies with model variants.
 ### Initial Training
-### Fine-Tuning
-### Evaluation
-### Mask Overlay Visualization
+- Conducted initial training runs with aggressive logging, callbacks, and visualization.
+- Verified base model performance using validation metrics prior to variant model fine-tuning.
+### Variant Fine-Tuning
+- Refined training parameters and loss functions for three model variants: Dice-Optimized, Balanced (F1), Recall-Optimized
+- Tracked validation metrics to detect overfitting and guide early stopping.
+### Evaluation & Benchmarking
+- Computed all relevant performance metrics (Dice, IoU, Precision, Recall, Pixel Accuracy, F1 Score).
+- Compared results across all three model variants.
+- Used unaltered test set, no image preprocessing, for final benchmark reporting.
+### Visualization & Verification
+- Overlaid predicted segmentation masks on source images for visual inspection.
+- Used this to detect potential post-processing errors.
 ### Preprocessing Experimentation
-### XAI Visualizations
+- Tested multiple preprocessing configurations and evaluated their impact on final test performance.
+- Chose to report metrics without preprocessing to preserve direct comparability with other ISIC benchmark solutions.
+### Explainability (XAI) Tools
+- Implemented Grad-CAM, superpixel confidence mapping, saliency mapping, integrated gradients, and layer visualizations.
+- Added interactive overlays and side-by-side views to improve interpretability.
+- Tuned XAI tools to operate on either tensor or NumPy representations depending on compatibility.
 ### End to End Layer Visualization
+- Enabled layer-level inspection to understand what features are extracted during encoding and decoding.
+- Used this to build intuition, identify areas of model uncertainty, and visualize attention mechanisms at work.
+
 
 ---
 
@@ -286,12 +320,14 @@ This project was developed and executed entirely in a Jupyter Notebook environme
 - ISIC 2018 Challenge Dataset - Benchmark dataset for training and evaluation
 
 ## Credits & References
-
 This project uses data from the ISIC 2018: Task 1 – Lesion Segmentation challenge. All images and masks are publicly available, de-identified, and used here under the ISIC data use policy for research and educational purposes.
 
 [1] Noel Codella, Veronica Rotemberg, Philipp Tschandl, M. Emre Celebi, Stephen Dusza, David Gutman, Brian Helba, Aadi Kalloo, Konstantinos Liopyris, Michael Marchetti, Harald Kittler, Allan Halpern: "Skin Lesion Analysis Toward Melanoma Detection 2018: A Challenge Hosted by the International Skin Imaging Collaboration (ISIC)", 2018; https://arxiv.org/abs/1902.03368
 
 [2] Tschandl, P., Rosendahl, C. & Kittler, H. The HAM10000 dataset, a large collection of multi-source dermatoscopic images of common pigmented skin lesions. Sci. Data 5, 180161 doi:10.1038/sdata.2018.161 (2018).
+
+Oktay et al., "Attention U-Net: Learning Where to Look for the Pancreas," 2018
+https://arxiv.org/abs/1804.03999
 
 ## Author
 **Jeffrey Robert Lynch** [LinkedIn](https://www.linkedin.com/in/jeffrey-lynch-350930348)
