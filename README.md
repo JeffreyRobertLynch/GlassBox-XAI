@@ -93,7 +93,7 @@ Please refer to the ISIC 2018 dataset license and usage guidelines for full data
 These screenshots show the functionality of GlassBox XAI. All features can be used with all three models, but these screenshots will focus primarily on Model 1 (Dice-Optimized), to avoid redundancy.
 
 ### Basic Segmentation & Comparison - Model 1
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78.png)
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 ### Multi-model Comparison with Dimmed Overlay - Model 1, Model 2, Model 3
 
