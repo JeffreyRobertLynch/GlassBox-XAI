@@ -136,7 +136,9 @@ These are the basic evaluation results of all 3 models on the full test set. Met
 
 #### Confusion Matrices - All Models - Test Set
 These are the confusion matrix results of all 3 models on the full test set. This calculates the model's correct and incorrect decisions on a pixel level across all images on the full test set. This shows model performance on a more granular level.
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
+![Model 1 - Confusion Matrix](output/cm_model_1_1.png)
+![Model 2 - Confusion Matrix](output/cm_model_2_1.png)
+![Model 3 - Confusion Matrix](output/cm_model_3_1.png)
 
 ### Interpretability & XAI
 Understanding why a model makes a prediction is essential for trust, regulation, and real-world deployment in medical imaging AI.
