@@ -90,38 +90,64 @@ Please refer to the ISIC 2018 dataset license and usage guidelines for full data
 ---
 
 ## Key Features
-These screenshots show the functionality of GlassBox XAI. All features can be used with all three models, but these screenshots will focus primarily on Model 1 (Dice-Optimized), to avoid redundancy.
+These screenshots show the functionality of GlassBox XAI. All features can be used with all three models, but these screenshots will focus primarily on Model 1 (Dice-Optimized), to avoid redundancy. Three batches fro mthe test set, containing 8 images each, are used to visualize features:
 
-### Basic Segmentation & Comparison - Model 1 - Batch A
+- Batch A (Average Metrics): Performance on this batch closely mirrors average performance on the full test set. This can be considered typical performance.
+- Batch B (High Metrics): Performance on this batch is higher than average performance on the full test set. 
+- Batch C (Low Metrics): Performance on this batch is lower than average performance on the full test set. 
+
+### Core Segmentation Outputs
+This section demonstrates how raw model predictions are turned into clear, interpretable visuals that support clinical or operational decision-making. The primary output is a binary segmentation mask, which highlights areas of interest, such as lesions, on a per-pixel basis.
+
+To make these predictions human-readable, we overlay the segmentation mask on the original image, creating a visual output that can be used directly by clinicians or analysts. This is the real output of the system.
+
+Ground truth masks, created by medical experts, are included here only for evaluation purposes. These are used to calculate objective performance metrics by comparing the model's output with the expert annotation.
+
+#### Basic Segmentation Output - Model 1 - Batch A
 ![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
-### Segmentation with Dimmed Overlay & Comparison - Model 1 - Batch A
+#### Segmentation Overlay - Model 1 - Batch A
 
-### Segmentation with Dimmed Overlay & Comparison - Model 1 - Batch B
+#### Segmentation Overlay - Model 1 - Batch B
 
-### Segmentation with Dimmed Overlay & Comparison - Model 1 - Batch C
+#### Segmentation Overlay - Model 1 - Batch C
 
-### Multi-model Segmentation Comparison - Model 1, Model 2, Model 3
+### Comparative Model Evaluation
 
-### Model Performance Evaluation on Test Set - Model 1, Model 2, Model 3
+#### Multi-model Segmentation Comparison - All Models - Batch A
 
-### Confusion Matrices - Model 1, Model 2, Model 3
+#### Model Performance Evaluation on Test Set - All Models - Test Set
 
-### Pixel Confidence Heatmap - Model 1
+#### Confusion Matrices - All Models - Test Set
 
-### Saliency Map - Model 1
+### Interpretability & XAI
 
-### Integrated Gradients - Model 1
+#### Pixel Confidence Mapping - Model 1 - Batch A
+This visualization overlays the segmentation result with color-coded superpixels, where each region is shaded based on the model's average confidence in that area. Warmer colors (red/yellow) indicate high certainty, while cooler colors (blue) highlight low-confidence regions.
 
-### Grad-CAM: Encoder Layers - Model 1
+This helps stakeholders:
 
-### Grad-CAM: Attention Layers - Model 1
+- Interpret model trust at a localized level.
 
-### Grad-CAM: Decoder Layers - Model 1
+- Identify unreliable regions that may need review or manual verification.
 
-### Grad-CAM: Final Layer with Output - Model 1
+- Support real-world decision-making by surfacing edge cases, ambiguity, or noise sensitivity in medical images.
 
-### Grad-CAM: End-to-End Layer Visualization - Model 1
+Superpixel-based confidence mapping is especially useful in clinical or high-risk applications, where understanding how much the model trusts each part of its prediction can be just as important as the prediction itself.
+
+#### Saliency Mapping - Model 1 - Batch A
+
+#### Integrated Gradients - Model 1 - Batch A
+
+#### Grad-CAM: Encoder Layers - Model 1 - Batch A
+
+#### Grad-CAM: Attention Layers - Model 1 - Batch A
+
+#### Grad-CAM: Decoder Layers - Model 1 - Batch A
+
+#### Grad-CAM: Final Layer with Output - Model 1 - Batch A
+
+#### Grad-CAM: End-to-End Layer Visualization - Model 1 - Batch A
 
 ---
 
