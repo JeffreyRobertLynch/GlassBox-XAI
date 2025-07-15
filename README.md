@@ -105,19 +105,19 @@ Ground truth masks, created by medical experts, are included here only for evalu
 
 #### Basic Segmentation Output - Model 1 - Batch A
 Here we have the base image to be segmented, the expert annotated mask, and the models' outputted mask for comparison. 
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
+![Model 1 - Segmentation Output - Batch A](output/base_model_1_batch_a_1.png)
 
 #### Segmentation Overlay - Model 1 - Batch A
 We take the model's output and create a dimmed overlay, placed over the original image. We do the same for the expert annotated mask for comparison. We also calculate performance metrics across this batch, for reference. This visual uses Batch A, representing typical performance.
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
+![Model 1 - Segmentation Overlay - Batch A](output/overlay_model_1_batch_a_1.png)
 
 #### Segmentation Overlay - Model 1 - Batch B
 This visual uses Batch B, representing high performance. The model's segmentation decision closely mirrors the expert annotation.
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
+![Model 1 - Segmentation Overlay - Batch B](output/overlay_model_1_batch_b_1.png)
 
 #### Segmentation Overlay - Model 1 - Batch C
 This visual uses Batch C, representing low performance. The model's segmentation decision mirrors the expert annotation for most images, but it isn't capturing the entirety of all lesions in this batch.
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
+![Model 1 - Segmentation Overlay - Batch C](output/overlay_model_1_batch_c_1.png)
 
 ### Comparative Model Evaluation
 Building trust in AI systems requires more than clean outputs; it requires objective metrics. This section compares the performance of three models trained on the same task, showing how different training strategies affect generalization, reliability, and bias.
