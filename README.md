@@ -104,23 +104,46 @@ To make these predictions human-readable, we overlay the segmentation mask on th
 Ground truth masks, created by medical experts, are included here only for evaluation purposes. These are used to calculate objective performance metrics by comparing the model's output with the expert annotation.
 
 #### Basic Segmentation Output - Model 1 - Batch A
+Here we have the base image to be segmented, the expert annotated mask, and the models' outputted mask for comparison. 
 ![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Segmentation Overlay - Model 1 - Batch A
+We take the model's output and create a dimmed overlay, placed over the original image. We do the same for the expert annotated mask for comparison. We also calculate performance metrics across this batch, for reference. This visual uses Batch A, representing typical performance.
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Segmentation Overlay - Model 1 - Batch B
+This visual uses Batch B, representing high performance. The model's segmentation decision closely mirrors the expert annotation.
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Segmentation Overlay - Model 1 - Batch C
+This visual uses Batch C, representing low performance. The model's segmentation decision mirrors the expert annotation for most images, but it isn't capturing the entirety of all lesions in this batch.
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 ### Comparative Model Evaluation
+Building trust in AI systems requires more than clean outputs; it requires objective metrics. This section compares the performance of three models trained on the same task, showing how different training strategies affect generalization, reliability, and bias.
+
+We use standard metrics like Dice coefficient, pixel accuracy, and confusion matrices to evaluate performance on a held-out test set.
+
+Visual side-by-side comparisons further highlight the practical impact of model choice in terms of performance.
 
 #### Multi-model Segmentation Comparison - All Models - Batch A
+Here we visualize the segmentation decision of all 3 variant models for comparison. There are notable differences in performance between the variant models, other batches show greater divergence. 
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Model Performance Evaluation on Test Set - All Models - Test Set
+These are the basic evaluation results of all 3 models on the full test set. Metric definitions can be found in the "Models" section.
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Confusion Matrices - All Models - Test Set
+These are the confusion matrix results of all 3 models on the full test set. This calculates the model's correct and incorrect decisions on a pixel level across all images on the full test set. This shows model performance on a more granular level.
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 ### Interpretability & XAI
+Understanding why a model makes a prediction is essential for trust, regulation, and real-world deployment in medical imaging AI.
+
+This section showcases a suite of XAI techniques designed to help experts audit, debug, and validate predictions. It includes both pixel-level confidence and higher-level interpretability tools like saliency maps, integrated gradients, and Grad-CAM.
+
+These tools allow practitioners to see what the model "attended to" when making decisions. This helps identify false positives, edge-case risks, or systemic biases. Whether you're debugging or certifying a model for clinical use, interpretability is critical.
 
 #### Pixel Confidence Mapping - Model 1 - Batch A
 This visualization overlays the segmentation result with color-coded superpixels, where each region is shaded based on the model's average confidence in that area. Warmer colors (red/yellow) indicate high certainty, while cooler colors (blue) highlight low-confidence regions.
@@ -134,20 +157,28 @@ This helps stakeholders:
 - Support real-world decision-making by surfacing edge cases, ambiguity, or noise sensitivity in medical images.
 
 Superpixel-based confidence mapping is especially useful in clinical or high-risk applications, where understanding how much the model trusts each part of its prediction can be just as important as the prediction itself.
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Saliency Mapping - Model 1 - Batch A
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Integrated Gradients - Model 1 - Batch A
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Grad-CAM: Encoder Layers - Model 1 - Batch A
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Grad-CAM: Attention Layers - Model 1 - Batch A
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Grad-CAM: Decoder Layers - Model 1 - Batch A
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Grad-CAM: Final Layer with Output - Model 1 - Batch A
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Grad-CAM: End-to-End Layer Visualization - Model 1 - Batch A
+![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 ---
 
