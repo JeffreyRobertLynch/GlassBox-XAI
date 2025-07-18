@@ -105,18 +105,28 @@ Ground truth masks, created by medical experts, are included here only for evalu
 
 #### Basic Segmentation Output - Model 1 - Batch A
 Here we have the base image to be segmented, the expert annotated mask, and the models' outputted mask for comparison. 
+
 ![Model 1 - Segmentation Output - Batch A](output/base_model_1_batch_a_1.png)
 
 #### Segmentation Overlay - Model 1 - Batch A
 We take the model's output and create a dimmed overlay, placed over the original image. We do the same for the expert annotated mask for comparison. We also calculate performance metrics across this batch, for reference. This visual uses Batch A, representing typical performance.
+
+![Model 1 - Segmentation Overlay - Batch A](output/metric_overlay_model_1_batch_a_1.png)
+
 ![Model 1 - Segmentation Overlay - Batch A](output/overlay_model_1_batch_a_1.png)
 
 #### Segmentation Overlay - Model 1 - Batch B
 This visual uses Batch B, representing high performance. The model's segmentation decision closely mirrors the expert annotation.
+
+![Model 1 - Segmentation Overlay - Batch B](output/metric_overlay_model_1_batch_b_1.png)
+
 ![Model 1 - Segmentation Overlay - Batch B](output/overlay_model_1_batch_b_1.png)
 
 #### Segmentation Overlay - Model 1 - Batch C
 This visual uses Batch C, representing low performance. The model's segmentation decision mirrors the expert annotation for most images, but it isn't capturing the entirety of all lesions in this batch.
+
+![Model 1 - Segmentation Overlay - Batch C](output/metric_overlay_model_1_batch_c_1.png)
+
 ![Model 1 - Segmentation Overlay - Batch C](output/overlay_model_1_batch_c_1.png)
 
 ### Comparative Model Evaluation
@@ -128,7 +138,10 @@ Visual side-by-side comparisons further highlight the practical impact of model 
 
 #### Multi-model Segmentation Comparison - All Models - Batch A
 Here we visualize the segmentation decision of all 3 variant models for comparison. There are notable differences in performance between the variant models, other batches show greater divergence. 
-![Model 1 - Segmentation Output](output/multi_model_batch_a_1.png)
+
+![Multi-Model - Segmentation Output](output/metric_multi_model_batch_a_1.png)
+
+![Multi-Model - Segmentation Output](output/multi_model_batch_a_1.png)
 
 #### Model Performance Evaluation on Test Set - All Models - Test Set
 These are the evaluation results of all 3 models on the full test set. Metric definitions can be found in the "Models" section. Model metrics are generally high for all three, but if we focus specifically on the trade off between Precision and Recall we can see that the primary difference in performance is how each model makes errors. Models err on the side of false negatives, balance, or false positives when classifying pixels. Metric definitions can be found in the "Models" section. 
@@ -188,10 +201,11 @@ This helps stakeholders:
 - Support real-world decision-making by surfacing edge cases, ambiguity, or noise sensitivity in medical images.
 
 Superpixel-based confidence mapping is especially useful in clinical or high-risk applications, where understanding how much the model trusts each part of its prediction can be just as important as the prediction itself.
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
+
+![Model 1 - Confidence Mapping Output](output/conf_map_model_1_batch_a_1.png)
 
 #### Saliency Mapping - Model 1 - Batch A
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
+![Model 1 - Saliency Mapping Output](output/sal_map_model_1_batch_a_1.png)
 
 #### Integrated Gradients - Model 1 - Batch A
 ![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
