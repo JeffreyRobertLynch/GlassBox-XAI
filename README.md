@@ -128,7 +128,7 @@ Visual side-by-side comparisons further highlight the practical impact of model 
 
 #### Multi-model Segmentation Comparison - All Models - Batch A
 Here we visualize the segmentation decision of all 3 variant models for comparison. There are notable differences in performance between the variant models, other batches show greater divergence. 
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
+![Model 1 - Segmentation Output](output/multi_model_batch_a_1.png)
 
 #### Model Performance Evaluation on Test Set - All Models - Test Set
 These are the basic evaluation results of all 3 models on the full test set. Metric definitions can be found in the "Models" section.
@@ -136,8 +136,19 @@ These are the basic evaluation results of all 3 models on the full test set. Met
 
 #### Confusion Matrices - All Models - Test Set
 These are the confusion matrix results of all 3 models on the full test set. This calculates the model's correct and incorrect decisions on a pixel level across all images on the full test set. This shows model performance on a more granular level.
+
+With these matrices, we can appreciate the difference in performance between these models. By focusing on the errors, false negatives and false positives, we will see a progression of false positives increasing and false negatives decreasing consistently. This does not indicate an overall increase of performance, all models are generally accurate and high-performance. Rather, each is specialized for different deployment environments with different sensitivities. This was achieved by using different custom loss functions for each model. 
+
+##### Model 1 - Dice-Optimized
+~2.5% of pixels in the test set are false positives and ~4.8% are false negatives. 
 ![Model 1 - Confusion Matrix](output/cm_model_1_1.png)
+
+##### Model 2 - Balance-Optimized 
+~3.3% of pixels in the test set are false positives and ~4.0% are false negatives. 
 ![Model 2 - Confusion Matrix](output/cm_model_2_1.png)
+
+##### Model 3 - Recall-Optimized 
+~5.2% of pixels in the test set are false positives and ~3.0% are false negatives. 
 ![Model 3 - Confusion Matrix](output/cm_model_3_1.png)
 
 ### Interpretability & XAI
