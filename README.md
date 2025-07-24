@@ -204,25 +204,36 @@ Superpixel-based confidence mapping is especially useful in clinical or high-ris
 
 ![Model 1 - Confidence Mapping Output](output/conf_map_model_1_batch_a_1.png)
 
-#### Saliency Mapping - Model 1 - Batch A
+#### Saliency Mapping - Raw Logits (Unconstrained) - Model 1 - Batch A
+
+![Model 1 - Saliency Mapping Output](output/sal_map_model_1_batch_a_1_raw.png)
+
+##### Saliency Mapping - Sigmoid-Scaled (Constrained) - Model 1 - Batch A
+
 ![Model 1 - Saliency Mapping Output](output/sal_map_model_1_batch_a_1.png)
 
 #### Integrated Gradients - Model 1 - Batch A
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
+
+![Model 1 - Integrated Gradients Output](output/int_grad_model_1_batch_a_1.png)
 
 #### Grad-CAM: Encoder Layers - Model 1 - Batch A
+
 ![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Grad-CAM: Attention Layers - Model 1 - Batch A
+
 ![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Grad-CAM: Decoder Layers - Model 1 - Batch A
+
 ![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Grad-CAM: Final Layer with Output - Model 1 - Batch A
+
 ![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 #### Grad-CAM: End-to-End Layer Visualization - Model 1 - Batch A
+
 ![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 ---
