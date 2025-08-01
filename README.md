@@ -90,7 +90,7 @@ Please refer to the ISIC 2018 dataset license and usage guidelines for full data
 ---
 
 ## Key Features
-These screenshots show the functionality of GlassBox XAI. All features can be used with all three models, but these screenshots will focus primarily on Model 1 (Dice-Optimized), to avoid redundancy. Three batches fro mthe test set, containing 8 images each, are used to visualize features:
+These screenshots show the functionality of GlassBox XAI. All features can be used with all three models, but these screenshots will focus primarily on Model 1 (Dice-Optimized), to avoid redundancy. Three batches from the test set, containing 8 images each, are used to visualize features:
 
 - Batch A (Average Metrics): Performance on this batch closely mirrors average performance on the full test set. This can be considered typical performance.
 - Batch B (High Metrics): Performance on this batch is higher than average performance on the full test set. 
