@@ -1,31 +1,43 @@
 # GlassBox-XAI
 Attention U-Net for Medical Image Segmentation with XAI Suite  
 
-**Disclaimer: This project is for research and demonstration purposes only. It is not a medical device and is not intended for clinical use, diagnosis, or treatment. All medical images are from the anonymized, public ISIC 2018 dataset and contain no PHI.**
+---
+
+## Data Ethics & Full Disclaimer
+
+**This project is for research and demonstration purposes only. It is not a medical device and is not intended for clinical use, diagnosis, or treatment.**
+
+**All medical images shown are sourced from the ISIC 2018 Challenge Dataset. A publicly released, fully anonymized dataset curated for non-commercial research. No private health information (PHI) is included.**
+
+**All results and visual outputs are generated deep learning models and evaluated using the official ISIC 2018 test set for accuracy metrics. This work has not been validated in clinical settings.**
+
+**No claims are made regarding diagnostic accuracy, safety, or fitness for medical decision-making.**
+
+**Visualizations (e.g., segmentation masks, saliency maps, Grad-CAM overlays) are interpretability tools designed to support human understanding of model behavior. They are not clinical indicators.**
+
+This work reflects a commitment to transparency, explainability, and responsible AI development in medical imaging research. Please refer to the [ISIC 2018 dataset license and terms of use](https://challenge2018.isic-archive.com/) for attribution and usage guidelines.
 
 ---
 
 ## Problem Domain
-This project focuses on **automated binary segmentation of skin lesions** in medical images, a fundamental step toward early melanoma detection. Accurate boundary delineation (lesion vs. background) is essential for:
+This project focuses on **automated binary segmentation of skin lesions** in medical images, a fundamental step toward early melanoma detection. Unlike basic classification, which simply detects the presence of a lesion, accurate segmentation outlines precise lesion boundaries. Potential applications include:
 
 - **Risk Triage:** Flagging high-risk areas for deeper evaluation.
 
 - **Quantitative Tracking:** Monitoring lesion growth or regression over time.
 
-- **Clinical Workflows:** Integrating into Computer-Aided Diagnosis (CAD) tools.
-
-Unlike simple classification, which only states "lesion present", accurate segmentation reveals shape irregularities and precise border limits, aiding biopsy guidance and treatment decisions.
+- **Decision Support:** Integration with Computer-Aided Diagnosis (CAD) tools and Human-in-the-Loop (HITL) Systems.
 
 ### Why Explainability (XAI) Is Critical in Healthcare AI
-Building transparent AI is essential, not optional, for clinical adoption:
+Transparency in model decisions is essential for the safe and ethical adoption of AI in healthcare. XAI enables:
 
-- **Clinician Trust & Collaboration:** Tools like saliency and Grad‑CAM heatmaps help clinicians understand how and why the model made a specific decision, including the model's confidence level at the pixel level. This supports human-in-the-loop (HITL) workflows and informed decision-making. 
+- **Clinician Trust & Human Oversight:** Visual tools like saliency maps and Grad‑CAM help clinicians verify model reasoning at the pixel level, supporting HITL workflows and shared decision-making.
 
-- **Regulatory & Ethical Compliance:** XAI is increasingly required for medical device approval and supports bias detection, auditability, and safe deployment.
+- **Regulatory & Ethical Compliance:** XAI enables audit trails, bias detection, and decision transparency increasingly required by medical regulators (e.g., FDA, CE, MDR).
 
-- **Model Validation & Iterative Improvement:** Visual explanations enable SME feedback loops, critical for clinical trials, continuous improvement, and device certification.
+- **Model Debugging & Iterative Improvement** Visualizations reveal model behavior under edge cases, guiding Subject Matter Expert (SME) feedback loops during development and evaluation.
 
-- **Real-world Utility:** Studies show XAI-enabled tools increase trust and performance in clinical settings.
+- **Real-World Utility:** Studies show interpretable tools are more likely to gain clinician trust and improve diagnostic performance when used as assistive systems [(Holzinger et al., 2017)](https://arxiv.org/abs/1712.09923).
 
 ---
 
@@ -69,23 +81,6 @@ GlassBox XAI demonstrates that **production-level segmentation performance** can
 GlassBox XAI delivers performance on par with or exceeding top 2018 leaderboard entries, while improving transparency, auditability, and deployment feasibility. However, it was produced in 2024 and some 2024-era systems may surpass GlassBox XAI's metrics using larger models, expanded training data, or ensemble learning — but often at the cost of transparency, auditability, security, and accessibility.
 
 The trade-offs of these techniques are discussed in the "Future Work" section.
-
----
-
-## Data Ethics & Full Disclaimer
-**This project is for research and demonstration purposes only. It is not a medical device and is not intended for clinical use, diagnosis, or treatment.**
-
-**All medical images shown below are part of the ISIC 2018 Challenge Dataset, a publicly released and anonymized dataset curated for research. No private health information (PHI) is present.**
-
-**Results presented are generated automatically by deep learning models, and their accuracy is benchmarked using the ISIC-provided test set, not through real-world clinical evaluation.**
-
-**This solution has not undergone clinical validation or regulatory review.**
-
-**Visualizations (e.g., masks, heatmaps, Grad-CAM) are interpretability tools, not clinical indicators.**
-
-**This project does not offer diagnostic guidance and should not be used as such.**
-
-Please refer to the ISIC 2018 dataset license and usage guidelines for full dataset attribution and terms of use.
 
 ---
 
