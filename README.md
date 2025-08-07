@@ -218,23 +218,22 @@ Superpixel-based confidence mapping is especially useful in clinical or high-ris
 
 #### Grad-CAM: Encoder Layers - Model 1 - Batch A
 
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
+![Model 1 - Grad-CAM Encoder Layer Output](output/layer_enc_model_1_batch_a_1.png)
 
 #### Grad-CAM: Attention Layers - Model 1 - Batch A
 
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
+![Model 1 - Grad-CAM Attention Layer Output](output/layer_att_model_1_batch_a_1.png)
 
 #### Grad-CAM: Decoder Layers - Model 1 - Batch A
 
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
+![Model 1 - Grad-CAM Decoder Layer Output](output/layer_dec_model_1_batch_a_1.png)
 
 #### Grad-CAM: Final Layer with Output - Model 1 - Batch A
 
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
+![Model 1 - Grad-CAM Output Layer Output](output/layer_out_model_1_batch_a_1.png)
 
 #### Grad-CAM: End-to-End Layer Visualization - Model 1 - Batch A
 
-![Model 1 - Segmentation Output](output/base_output/base_model_1_batch_78_1.png)
 
 ---
 
