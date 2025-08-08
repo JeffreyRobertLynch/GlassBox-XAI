@@ -93,27 +93,27 @@ All three models use the **same core architecture**, but were trained and fine-t
 
 ---
 
-### Segmentation Features
+### Core Segmentation Features
 
 - **Binary Segmentation Output:** The raw model output. A binary mask showing which pixels the model identifies as lesion and which it identifies as non-lesion.
-- **Segmentation Overlay:** Predicted mask, or boundary decision, dimmed and laid over the original image for segmentation.  
+- **Segmentation Overlay:** Predicted mask, or boundary decision, dimmed and laid over the original image for segmentation. An essential step for evaluating segmentation accuracy.  
 - **Image Preprocessing Pipeline:** Fifteen toggleable preprocesing techniques, such as brightness adjustment and/or dilation, can be applied to images prior to segmentation to improve model performance. These techniques have been omitted for this demo. All visuals and reported metrics reflect performance on the unaltered, baseline dataset.
 ---
 
 ### Comparative Model Evaluation Features
 
-- **Multi-model Segmentation Overlays:** Side-by-side visual comparison of all three model variants using the same image input. Highlights how each model handles precision, recall, and boundary decisions differently.
-- **Multi-model Test Metrics:** Full evaluation across Dice, IoU, Precision, Recall, Pixel Accuracy, and F1 Score across all models.
-- **Confusion Matrices:** Pixel-level false positive, false negative, true positive, and true negative rates for the entire test set across all models. Shows decision patterns & priorities.
+- **Variant Comparison Segmentation Overlays:** Side-by-side visual comparison of all three model variants using the same image input. Highlights how each model handles boundary decisions differently based on specialization.
+- **Test Set Performance Metrics:** Full evaluation across Dice, IoU, Precision, Recall, Pixel Accuracy, and F1 Score across all models.
+- **Confusion Matrices:** Pixel-level false positive, false negative, true positive, and true negative rates for the entire test set across all models. High-level picture of strengths and trade-offs.
 
 ---
 
 ### XAI Features
 
-- **Confidence Maps:** Heatmap showing model confidence in its decisions across different regions of an image.
-- **Saliency Maps:** Highlights which pixels were most influential to the model's decision.  
-- **Integrated Gradients:** Quantifies each pixel's contribution to the final output by comparing it to a baseline. 
-- **Grad-CAM Visualizations**: End-to-end visualization of all convolutional layers as a progression from input to output. Divided into encoder, attention, decoder, and output stages to show how segmentation decisions evolve through the network.
+- **Confidence Maps:** Heatmap showing model confidence in its decisions across different regions of an image. Essential context for model decision transparency.
+- **Saliency Maps:** Highlights which pixels most strongly affect the model’s output, based on local sensitivity. Typically emphasizes edges or boundaries where predictions shift sharply. 
+- **Integrated Gradients:** Measures cumulative influence of each pixel by comparing the image to a baseline. Unlike saliency maps, IG reveals focus on both the core and edges of a lesion, offering a more complete view of what drives model decisions.
+- **Grad-CAM Visualizations**: Visualization of the progression from image input to model output, across all convolutional layers. Divided into encoder, attention, decoder, and output stages to show how segmentation decisions evolve through the network architecture.
 
 ---
 
@@ -129,46 +129,37 @@ All three models use the **same core architecture**, but were trained and fine-t
 
 ### Solution Summary
 
-GlassBox XAI achieves **Dice 0.8751** and **IoU 0.8000**, meeting or exceeding top entries from the ISIC 2018 leaderboard—**without relying on pretrained models, external data, or ensemble methods**. While some modern models (2024–2025) may report Dice scores above 0.90, these often depend on substantial computational resources, cloud infrastructure, or proprietary datasets.
-
-By contrast, GlassBox was developed **entirely from scratch**, trained on limited data, and runs **securely on local hardware**, with **end-to-end auditability**. It is suitable for real-world clinical deployment where **privacy, traceability, and ownership** are critical design factors.
-
-In short, the system delivers **high-tier performance under realistic clinical constraints**, while also offering **powerful visual diagnostics**, **exceptional model transparency**, and **flexible, local deployability**—capabilities not often found in more opaque, resource-intensive solutions.
-
-These trade-offs—and potential development paths for GlassBox XAI—are discussed further in the **Future Work** section.
-
-
 GlassBox XAI achieves **Dice 0.8751** and **IoU 0.8000**, meeting or exceeding top entries from the ISIC 2018 leaderboard, **without relying on pretrained models, external data, or ensemble methods**. While some modern models (2024–2025) may report Dice scores above 0.90, these typically require computationally expensive techniques, substantial cloud infrastructure, or proprietary data pipelines.
 
 By contrast, GlassBox was developed **entirely from scratch**, trained on limited data, and runs **securely on local hardware** with **end-to-end auditability**. It is suitable for real-world clinical deployment where **privacy, traceability, and model ownership** are critical design factors.
 
 In short, this system delivers **high-tier performance under realistic clinical constraints**, while also offering **powerful visual diagnostics**, **exceptional model transparency**, and **flexibile, local deployability** not often found in more opaque, compute-heavy solutions.
 
-These trade offs, and potential development paths for GlassBox XAI, are explored more thoroughly in the "Future Work" section.
+These trade-offs, and potential development paths for GlassBox XAI, are explored more thoroughly in the **Future Work** section.
 
 ---
 
-## Key Features
-These screenshots show the functionality of GlassBox XAI. All features can be used with all three models, but these screenshots will focus primarily on Model 1 (Dice-Optimized), to avoid redundancy. Three batches from the test set, containing 8 images each, are used to visualize features:
+## Core Segmentation Features
 
-- Batch A (Average Metrics): Performance on this batch closely mirrors average performance on the full test set. This can be considered typical performance.
-- Batch B (High Metrics): Performance on this batch is higher than average performance on the full test set. 
-- Batch C (Low Metrics): Performance on this batch is lower than average performance on the full test set. 
+The visuals below demonstrate the core segmentation capabilities of GlassBox XAI. While all features support all model variants and image batches, we primarily showcase **Model 1 (Dice-Optimized)** with **Batch A (Average Performance)** for clarity, consistency, and realistic baseline performance.
 
-### Core Segmentation Outputs
-This section demonstrates how raw model predictions are turned into clear, interpretable visuals that support clinical or operational decision-making. The primary output is a binary segmentation mask, which highlights areas of interest, such as lesions, on a per-pixel basis.
-
-To make these predictions human-readable, we overlay the segmentation mask on the original image, creating a visual output that can be used directly by clinicians or analysts. This is the real output of the system.
-
-Ground truth masks, created by medical experts, are included here only for evaluation purposes. These are used to calculate objective performance metrics by comparing the model's output with the expert annotation.
+- **Batch A (Average Metrics):** Mirrors the models' average performance on the full test set. Represent typical, expected outcomes.
+- **Batch B (High Metrics):** Outperforms full test set metrics. Illustatrates optimal use cases.
+- **Batch C (Low Metrics):** Underperforms full test set metrics. Useful for evaluating edge cases or failure points.
 
 #### Basic Segmentation Output - Model 1 - Batch A
-Here we have the base image to be segmented, the expert annotated mask, and the models' outputted mask for comparison. 
+
+This section demonstrates how raw model predictions are turned into clear visuals that support decision-making. The primary output is a binary segmentation mask, highlighting lesion regions on a per-pixel basis. Here we have the base image to be segmented, the expert annotated mask, and the models' outputted mask for comparison. 
+
+Ground truth masks, expert-annotated and included for evaluation, allow us to compare model output visually and calculate performance metrics across the batch. 
 
 ![Model 1 - Segmentation Output - Batch A](output/base_model_1_batch_a_1.png)
 
 #### Segmentation Overlay - Model 1 - Batch A
-We take the model's output and create a dimmed overlay, placed over the original image. We do the same for the expert annotated mask for comparison. We also calculate performance metrics across this batch, for reference. This visual uses Batch A, representing typical performance.
+
+To make predictions visually intuitive, we overlay the dimmed segmentation mask on the original image. This creates a human-readable output that can be compared directly with expert annotations. We include overlays for both the model and expert masks, along with batch-level performance metrics for context.
+
+This visual uses Batch A, representing average performance.
 
 ![Model 1 - Segmentation Overlay - Batch A](output/metric_overlay_model_1_batch_a_1.png)
 
