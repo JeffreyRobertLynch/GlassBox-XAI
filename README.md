@@ -108,11 +108,11 @@ All three models use the **same core architecture**, but were trained and fine-t
 
 ---
 
-### XAI Features
+### Interpretability & XAI Features
 
-- **Confidence Maps:** Heatmap showing model confidence in its decisions across different regions of an image. Essential context for model decision transparency.
-- **Saliency Maps:** Highlights which pixels most strongly affect the model’s output, based on local sensitivity. Typically emphasizes edges or boundaries where predictions shift sharply. 
-- **Integrated Gradients:** Measures cumulative influence of each pixel by comparing the image to a baseline. Unlike saliency maps, IG reveals focus on both the core and edges of a lesion, offering a more complete view of what drives model decisions.
+- **Confidence Map Overlay:** Heatmap showing model confidence in its decisions across different regions of an image. Essential context for model decision transparency.
+- **Saliency Map Overlay:** Highlights which pixels most strongly affect the model’s output, based on local sensitivity. Typically emphasizes edges or boundaries where predictions shift sharply. 
+- **Integrated Gradients Overlay:** Measures cumulative influence of each pixel by comparing the image to a baseline. Unlike saliency maps, IG reveals focus on both the core and edges of a lesion, offering a more complete view of what drives model decisions.
 - **Grad-CAM Visualizations**: Visualization of the progression from image input to model output, across all convolutional layers. Divided into encoder, attention, decoder, and output stages to show how segmentation decisions evolve through the network architecture.
 
 ---
@@ -147,143 +147,234 @@ The visuals below demonstrate the core segmentation capabilities of GlassBox XAI
 - **Batch B (High Metrics):** Outperforms full test set metrics. Illustatrates optimal use cases.
 - **Batch C (Low Metrics):** Underperforms full test set metrics. Useful for evaluating edge cases or failure points.
 
+---
+
 #### Basic Segmentation Output - Model 1 - Batch A
 
 This section demonstrates how raw model predictions are turned into clear visuals that support decision-making. The primary output is a binary segmentation mask, highlighting lesion regions on a per-pixel basis. Here we have the base image to be segmented, the expert annotated mask, and the models' outputted mask for comparison. 
 
 Ground truth masks, expert-annotated and included for evaluation, allow us to compare model output visually and calculate performance metrics across the batch. 
 
-![Model 1 - Segmentation Output - Batch A](output/base_model_1_batch_a_1.png)
+![Model 1 - Segmentation Output Visual - Batch A](output/base_model_1_batch_a_1.png)
+
+---
 
 #### Segmentation Overlay - Model 1 - Batch A
 
 To make predictions visually intuitive, we overlay the dimmed segmentation mask on the original image. This creates a human-readable output that can be compared directly with expert annotations. We include overlays for both the model and expert masks, along with batch-level performance metrics for context.
 
-This visual uses Batch A, representing average performance.
+This visual uses Batch A, representing expected mean performance. The model's segmentation boundaries align closely with the expert-annotated boundaries, aside from images 4 and 5, which are undersegmented.
 
-![Model 1 - Segmentation Overlay - Batch A](output/metric_overlay_model_1_batch_a_1.png)
+![Model 1 - Segmentation Overlay Metric - Batch A](output/metric_overlay_model_1_batch_a_1.png)
 
-![Model 1 - Segmentation Overlay - Batch A](output/overlay_model_1_batch_a_1.png)
+![Model 1 - Segmentation Overlay Visual - Batch A](output/overlay_model_1_batch_a_1.png)
+
+---
 
 #### Segmentation Overlay - Model 1 - Batch B
-This visual uses Batch B, representing high performance. The model's segmentation decision closely mirrors the expert annotation.
+This visual uses Batch B, representing optimal use case. The model's segmentation boundaries very closely mirror the expert-annotated boundaries. Only slight misalignment in images 3, 5, and 6.
 
-![Model 1 - Segmentation Overlay - Batch B](output/metric_overlay_model_1_batch_b_1.png)
+![Model 1 - Segmentation Overlay Metric - Batch B](output/metric_overlay_model_1_batch_b_1.png)
 
-![Model 1 - Segmentation Overlay - Batch B](output/overlay_model_1_batch_b_1.png)
+![Model 1 - Segmentation Overlay Visual - Batch B](output/overlay_model_1_batch_b_1.png)
+
+---
 
 #### Segmentation Overlay - Model 1 - Batch C
-This visual uses Batch C, representing low performance. The model's segmentation decision mirrors the expert annotation for most images, but it isn't capturing the entirety of all lesions in this batch.
+This visual uses Batch C, representing edge cases and failure points. The model's segmentation boundaries align relatively closely with the expert-annotated boundaries for images 6, 7, and 8. However, the model is missing significant portions of the lesion in images 1, 2, 3, 4 and 5.
 
-![Model 1 - Segmentation Overlay - Batch C](output/metric_overlay_model_1_batch_c_1.png)
+![Model 1 - Segmentation Overlay Metric - Batch C](output/metric_overlay_model_1_batch_c_1.png)
 
-![Model 1 - Segmentation Overlay - Batch C](output/overlay_model_1_batch_c_1.png)
+![Model 1 - Segmentation Overlay Visual - Batch C](output/overlay_model_1_batch_c_1.png)
 
-### Comparative Model Evaluation
-Building trust in AI systems requires more than clean outputs; it requires objective metrics. This section compares the performance of three models trained on the same task, showing how different training strategies affect generalization, reliability, and bias.
+---
 
-We use standard metrics like Dice coefficient, pixel accuracy, and confusion matrices to evaluate performance on a held-out test set.
+## Comparative Model Evaluation
+Building trust in AI systems requires more than clean outputs; it requires **objective, transparent evaluation**. This section compares the performance of three models trained on the same task to show how different training strategies affect generalization, error profiles, and suitability for specific deployment needs.
 
-Visual side-by-side comparisons further highlight the practical impact of model choice in terms of performance.
+---
 
-#### Multi-model Segmentation Comparison - All Models - Batch A
-Here we visualize the segmentation decision of all 3 variant models for comparison. There are notable differences in performance between the variant models, other batches show greater divergence. 
+### Variant Comparison Segmentation Overlays - All Models - Batch A
+Here we visualize the segmentation decision of all 3 variant models for comparison. For Batch A, differences are notable but not pronounced between variants. Other batches show greater divergence. 
 
-![Multi-Model - Segmentation Output](output/metric_multi_model_batch_a_1.png)
+![Multi-Model - Variant Comparison Metrics](output/metric_multi_model_batch_a_1.png)
 
-![Multi-Model - Segmentation Output](output/multi_model_batch_a_1.png)
+![Multi-Model - Variant Comparison Visual](output/multi_model_batch_a_1.png)
 
-#### Model Performance Evaluation on Test Set - All Models - Test Set
-These are the evaluation results of all 3 models on the full test set. Metric definitions can be found in the "Models" section. Model metrics are generally high for all three, but if we focus specifically on the trade off between Precision and Recall we can see that the primary difference in performance is how each model makes errors. Models err on the side of false negatives, balance, or false positives when classifying pixels. Metric definitions can be found in the "Models" section. 
+---
 
-##### Model 1 - Dice-Optimized
-Precision is higher, Recall is lower.
+### Model Performance Evaluation on Test Set - All Models - Test Set
+All three models achieve strong overall performance on the held-out test set. However, their error patterns differ meaningfully. The clearest differentiator is how each model balances Precision and Recall, or the rate of false positives versus false negatives at the pixel level.
 
-![Model 1 - Segmentation Output](output/eval_model_1_1.png)
+---
 
-##### Model 2 - Balance-Optimized
+#### Model 1 - Dice-Optimized
+Precision is higher; Recall is lower.
+
+![Model 1 - Test Set Metrics](output/eval_model_1_1.png)
+
+---
+
+#### Model 2 - Balance-Optimized
 Precision and Recall are balanced.
 
-![Model 1 - Segmentation Output](output/eval_model_2_1.png)
+![Model 2 - Test Set Metrics](output/eval_model_2_1.png)
 
-##### Model 3 - Recall-Optimized
-Precision is lower, Recall is higher.
+---
 
-![Model 1 - Segmentation Output](output/eval_model_3_1.png)
+#### Model 3 - Recall-Optimized
+Precision is lower; Recall is higher.
 
+![Model 3 - Test Set Metrics](output/eval_model_3_1.png)
 
-#### Confusion Matrices - All Models - Test Set
-These are the confusion matrix results of all 3 models on the full test set. This calculates the model's correct and incorrect decisions on a pixel level across all images on the full test set. This shows model performance on a more granular level.
+---
 
-With these matrices, we can appreciate the difference in performance between these models. By focusing on the errors, false negatives and false positives, we will see a progression of false positives increasing and false negatives decreasing consistently. This does not indicate an overall increase of performance, all models are generally accurate and high-performance. Rather, each is specialized for different deployment environments with different sensitivities. This was achieved by using different custom loss functions for each model. 
+### Confusion Matrices - All Models - Test Set
 
-##### Model 1 - Dice-Optimized
-~2.5% of pixels in the test set are false positives and ~4.8% are false negatives. 
+Confusion matrices break down the models' correct and incorrect predictions on a per-pixel basis across the entire test set. This provides a more detailed view of where and how errors occur, especially for medical applications where every pixel may carry diagnostic weight.
+
+These matrices reveal a consistent pattern across variants: as false positives increase, false negatives decrease, and vice versa. This does not indicate a drop in overall performance, each model remains highly accurate. Rather, it reflects how each was intentionally optimized for different risk profiles and deployment scenarios using custom loss functions. 
+
+In medical imaging, false positives are more acceptable than false negatives if missing a condition, or part of a condition, could lead to serious consequences. In other contexts, such as when treatment carries significant risk or the condition is less severe, a higher false negative rate may be tolerable. Alternatively, we can aim for balance. These preferences can also be fine-tuned more granularly through thresholding and curve analysis to further specialize model behavior.
+
+---
+
+#### Model 1 - Dice-Optimized
+~2.5% of test pixels are false positives; ~4.8% are false negatives. 
 
 ![Model 1 - Confusion Matrix](output/cm_model_1_1.png)
 
-##### Model 2 - Balance-Optimized 
-~3.3% of pixels in the test set are false positives and ~4.0% are false negatives.
+---
+
+#### Model 2 - Balance-Optimized 
+~3.3% of test pixels are false positives; ~4.0% are false negatives.
 
 ![Model 2 - Confusion Matrix](output/cm_model_2_1.png)
 
-##### Model 3 - Recall-Optimized 
-~5.2% of pixels in the test set are false positives and ~3.0% are false negatives. 
+---
+
+#### Model 3 - Recall-Optimized 
+~5.2% of test pixels are false positives; ~3.0% are false negatives. 
 
 ![Model 3 - Confusion Matrix](output/cm_model_3_1.png)
 
-### Interpretability & XAI
-Understanding why a model makes a prediction is essential for trust, regulation, and real-world deployment in medical imaging AI.
+---
 
-This section showcases a suite of XAI techniques designed to help experts audit, debug, and validate predictions. It includes both pixel-level confidence and higher-level interpretability tools like saliency maps, integrated gradients, and Grad-CAM.
+## Interpretability & XAI
+Understanding how and why a model makes its predictions is essential for trust, regulatory compliance, clinical safety, and real-world deployment.
 
-These tools allow practitioners to see what the model "attended to" when making decisions. This helps identify false positives, edge-case risks, or systemic biases. Whether you're debugging or certifying a model for clinical use, interpretability is critical.
+This section introduces a suite of interpretability tools designed to help researchers, clinicians, and auditors explain, interrogate, and validate model behavior beyond raw performance metrics. These include:
 
-#### Pixel Confidence Mapping - Model 1 - Batch A
-This visualization overlays the segmentation result with color-coded superpixels, where each region is shaded based on the model's average confidence in that area. Warmer colors (red/yellow) indicate high certainty, while cooler colors (blue) highlight low-confidence regions.
+- Pixel-level confidence maps
 
-This helps stakeholders:
+- Saliency visualizations (raw and sigmoid-scaled)
 
-- Interpret model trust at a localized level.
+- Integrated gradients for attribution
 
-- Identify unreliable regions that may need review or manual verification.
+- Full Grad-CAM layer-wise progression from input to output
 
-- Support real-world decision-making by surfacing edge cases, ambiguity, or noise sensitivity in medical images.
+Each method highlights a different aspect of the model's internal decision-making, allowing us to ask critical questions:
 
-Superpixel-based confidence mapping is especially useful in clinical or high-risk applications, where understanding how much the model trusts each part of its prediction can be just as important as the prediction itself.
+- Did the model focus on the lesion or background noise?
 
-![Model 1 - Confidence Mapping Output](output/conf_map_model_1_batch_a_1.png)
+- Did it attend to misleading non-lesion features (e.g, hairs, moles, shadows) but ultimately learn to discard them correctly?
 
-#### Saliency Mapping - Raw Logits (Unconstrained) - Model 1 - Batch A
+- Is it relying on human-visible features or irrelevant correlations?
 
-![Model 1 - Saliency Mapping Output](output/sal_map_model_1_batch_a_1_raw.png)
+- Does confidence behave as expected? High confidence in lesion cores but decreasing at the boundaries, as we expect to see, where the model has to decide precisely where to draw the segmentation boundary? 
 
-##### Saliency Mapping - Sigmoid-Scaled (Constrained) - Model 1 - Batch A
+- Does confidence drop near errors? Or does the model make errors with confidence?
 
-![Model 1 - Saliency Mapping Output](output/sal_map_model_1_batch_a_1.png)
+- Are attention mechanisms effective? Do we see increased focus on relevant features and decreased focus on irrelevant features when applied?
 
-#### Integrated Gradients - Model 1 - Batch A
+Whether auditing model attention, evaluating edge cases, or designing a transparent system for actionable human-in-the-loop (HITL) decision support, **XAI is foundational**.
+
+---
+
+### Confidence Map Overlay - Model 1 - Batch A
+This visualization shows the model’s segmentation prediction overlaid with a heatmap of per-pixel confidence, grouped into superpixels (clusters of visually similar pixels). Each region is color-coded based on how confidently the model believes it is part of the lesion (positive class).
+
+---
+
+### What This Tells Us
+
+- **Deep red lesion center:** High confidence in core lesion area
+
+- **Orange-yellow-green-blue borders:** Varying confidence near lesion edges (as expected)
+
+- **Clear blue background:** High confidence that surrounding skin is not part of the lesion
+
+This behavior is reasonable: high confidence in the lesion core, more uncertainty at boundaries, and strong rejection of background regions.
+
+---
+
+### Why It Matters
+- **Pinpoints areas of uncertainty** to help human reviewers identify where predictions may need manual verification.
+
+- **Supports HITL** workflows through auditing, especially in borderline or ambiguous cases.
+
+- **Debugging & QA** during development iterations to detect patterns, edge cases, and failure modes like overconfidence in incorrect segmentaton decisions.
+
+---
+
+### Technical Note
+Superpixels are generated using the SLIC algorithm to divide the image into super-pixel regions. Confidence values are calculated by averaging the model’s probability outputs within each region, resulting in a smoother and more interpretable heatmap.
+
+---
+
+### Real-World Use Case
+This overlay could help a dermatologist triage ambiguous cases. Low-confidence boundaries may prompt further review, while high-confidence regions offer reassurance. This supports risk-aware decision-making and calibrates trust in model outputs on a per-image, or even per-region, basis.
+
+---
+
+### Disclaimer
+This system is for research and educational use only. Performance is measured on the ISIC 2018 test dataset and has not undergone clinical validation.
+
+---
+
+![Model 1 - Confidence Map Output](output/conf_map_model_1_batch_a_1.png)
+
+---
+
+#### Saliency Map Overlay - Raw Logits (Unconstrained) - Model 1 - Batch A
+
+![Model 1 - Saliency Map Logits Output](output/sal_map_model_1_batch_a_1_raw.png)
+
+---
+
+#### Saliency Map Overlay - Sigmoid-Scaled (Constrained) - Model 1 - Batch A
+
+![Model 1 - Saliency Map Sigmoid Output](output/sal_map_model_1_batch_a_1.png)
+
+---
+
+#### Integrated Gradients Overlay - Model 1 - Batch A
 
 ![Model 1 - Integrated Gradients Output](output/int_grad_model_1_batch_a_1.png)
+
+---
 
 #### Grad-CAM: Encoder Layers - Model 1 - Batch A
 
 ![Model 1 - Grad-CAM Encoder Layer Output](output/layer_enc_model_1_batch_a_1.png)
 
+---
+
 #### Grad-CAM: Attention Layers - Model 1 - Batch A
 
 ![Model 1 - Grad-CAM Attention Layer Output](output/layer_att_model_1_batch_a_1.png)
+
+---
 
 #### Grad-CAM: Decoder Layers - Model 1 - Batch A
 
 ![Model 1 - Grad-CAM Decoder Layer Output](output/layer_dec_model_1_batch_a_1.png)
 
+---
+
 #### Grad-CAM: Final Layer with Output - Model 1 - Batch A
 
 ![Model 1 - Grad-CAM Output Layer Output](output/layer_out_model_1_batch_a_1.png)
-
-#### Grad-CAM: End-to-End Layer Visualization - Model 1 - Batch A
-
 
 ---
 
