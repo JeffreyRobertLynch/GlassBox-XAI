@@ -163,7 +163,7 @@ Ground truth masks, expert-annotated and included for evaluation, allow us to co
 
 To make predictions visually intuitive, we overlay the dimmed segmentation mask on the original image. This creates a human-readable output that can be compared directly with expert annotations. We include overlays for both the model and expert masks, along with batch-level performance metrics for context.
 
-This visual uses Batch A, representing expected mean performance. The model's segmentation boundaries align closely with the expert-annotated boundaries, aside from images 4 and 5, which are undersegmented.
+This visual uses Batch A, representing expected mean performance. The model's segmentation boundaries align closely with the expert-annotated boundaries, aside from images 4 and 5, which are undersegmented. Image 6 is slightly oversegmented, but still shows excellent shape alignment. 
 
 ![Model 1 - Segmentation Overlay Metric - Batch A](output/metric_overlay_model_1_batch_a_1.png)
 
@@ -298,13 +298,15 @@ This visualization shows the model’s segmentation prediction overlaid with a h
 
 ### What This Tells Us
 
-- **Deep red lesion center:** High confidence in core lesion area
+- **Deep red lesion center:** High confidence in core lesion area.
 
-- **Orange-yellow-green-blue borders:** Varying confidence near lesion edges (as expected)
+- **Orange-yellow-green-blue borders:** Varying confidence near lesion edges (as expected).
 
-- **Clear blue background:** High confidence that surrounding skin is not part of the lesion
+- **Clear blue background:** High confidence that surrounding skin is not part of the lesion.
 
-This behavior is reasonable: high confidence in the lesion core, more uncertainty at boundaries, and strong rejection of background regions.
+This behavior is exactly what we expect. High confidence in the lesion core, more uncertainty at boundaries, and strong rejection of background regions for all images. 
+
+But pay particular attention to the difference between images 4, 5, and 6 compared to the others. When we examined the metrics earlier, we saw images 4 and 5 were undersegmented compared to the expert annotation. Image 6 was slightly oversegmented, but still had excellent shape alignment.  
 
 ---
 
@@ -328,7 +330,7 @@ This overlay could help a dermatologist triage ambiguous cases. Low-confidence b
 ---
 
 ### Disclaimer
-This system is for research and educational use only. Performance is measured on the ISIC 2018 test dataset and has not undergone clinical validation.
+This system is for research and educational use only. Visuals and insights are based on the ISIC 2018 dataset and are not clinically validated.
 
 ---
 
@@ -336,13 +338,99 @@ This system is for research and educational use only. Performance is measured on
 
 ---
 
-#### Saliency Map Overlay - Raw Logits (Unconstrained) - Model 1 - Batch A
+## Saliency Map Overlay - Raw Logits - Model 1 - Batch A
+
+---
+
+This visualization highlights where the model is most sensitive to small changes in the input image. Each pixel is color-coded based on the gradient magnitude flowing from the raw logits (pre-sigmoid output) with respect to the input. The result is a high-resolution "sensitivity heatmap" showing all areas the model reacts to whether helpful, distracting, or irrelevant.
+
+---
+
+### What This Tells Us
+- **Clusters of “hot” pixels:** Regions the model is highly sensitive to, often aligned with textures or segmentation boundaries.
+
+- **Sensitivity outside the lesion:** Includes background features the model reacts to, such as lighting patterns or skin texture.
+
+- **Wide attribution scope:** Captures all contributing input signals, not just the ones the model ultimately trusts in its final prediction.
+
+This gives us a raw view of influence without filtering. Valuable for understanding early-stage model behavior or unwanted signal dependencies. Under close examination of noisy heatmaps, we can see that the hottest pixels generally correspond to segmentation boundaries. This will become clearer when we look at sigmoid-scaled saliency maps. 
+
+Again, pay particular attention to images 4, 5, and 6 compared to the others. Images 4 and 5 were undersegmented. Image 6 was slightly oversegmented.  
+
+---
+
+### Why It Matters
+- **Exposes early model behavior** during R&D and debugging phases to identify spurious correlations (e.g., hair, shadows, borders).
+
+- **Improves trust & safety** by revealing if a model is overly sensitive to irrelevant signals, overshadowing or distorting more relevant signals.
+
+- **Enables data-driven fixes** as “hot spots” in irrelevant areas may signal a need for improved data augmentation, normalization, pre-processing techniques, or annotation quality.
+
+---
+
+### Technical Note
+Gradients are computed using TensorFlow’s GradientTape, capturing how small input changes influence the raw logits. This is achieved by cloning the model and temporarily removing the sigmoid activation from the output layer during backpropagation, allowing direct access to the raw logits. This method can appear noisy and doesn't necessarily represent final prediction logic. This is addressed in sigmoid-scaled saliency and integrated gradient techniques.
+
+---
+
+### Real-World Use Case
+In a research workflow, an ML engineer or clinical auditor might use this map to detect whether the model is reacting to imaging artifacts or unintended features. For example, consistent sensitivity to non-lesion areas could inform dataset refinement, retraining with augmentation, or model regularization. Additionally, we can use this to determine the effectiveness of attention mechanisms. Does a noisy image here ultimately lead to a clear, accurate, segmentation boundary?
+
+---
+
+### Disclaimer
+For research and educational use only. Visuals and insights are based on the ISIC 2018 dataset and are not clinically validated.
+
+---
 
 ![Model 1 - Saliency Map Logits Output](output/sal_map_model_1_batch_a_1_raw.png)
 
 ---
 
-#### Saliency Map Overlay - Sigmoid-Scaled (Constrained) - Model 1 - Batch A
+## Saliency Map Overlay - Sigmoid-Scaled - Model 1 - Batch A
+
+---
+
+This visualization is much less noisy than the previous saliency map because the only hotspots are pixels that most influence the model’s final segmentation decision. This is computed using gradients of the sigmoid-activated output with respect to the input image. Unlike raw saliency maps which reflect all sensitivity, this map focuses only on what most affects the model’s final probability. The result is cleaner, more focused, and ideally emphasizes the lesion boundary.
+
+---
+
+### What This Tells Us
+- **Lesion boundary:** A thin, high-intensity band of pixels outlines the model’s segmentation decision.
+
+- **Interior & background:** Remain mostly blue (low gradient), showing low influence on the final outcome.
+
+Optimally, the model is not reacting broadly to irrelevant textures or lighting but is instead making sharp, boundary-based decisions. We see this clearly in the majority of images, where segmentation quality was excellent. 
+
+However, compare images 4 and 5 to the majority. A much different pattern than the majority. A clustering of hot pixels versus clear segmentation outlines. 
+
+Image 6, which was slightly oversegmented but still strongly aligned in shape, looks fairly clean here. More comparable to the majority than images 4 and 5. 
+
+---
+
+### Why It Matters
+- **Improves interpretability** by aligning attribution with the model’s actual output (post-activation), not just internal activations.
+
+- **Highlights decisive features** rather than noisy sensitivities, making it easier for clinicians or auditors to validate the reasoning.
+
+- **Strong HITL value** in expert review settings. Boundary-focused saliency supports targeted oversight of lesion delineation quality, particularly when compared and contrasted with raw logit saliency maps for the same input image.
+
+---
+
+### Technical Note
+This saliency map is computed using gradients derived from the sigmoid output, not raw logits. This constrains gradients to the final prediction layer, filtering out noisy activations. Compared to raw saliency, this produces smoother, cleaner, and more decision-aligned visualizations. Sigmoid-scaled saliency limits attention to the model’s final confidence output. Raw saliency highlights all input regions that influence internal activations, resulting in broader, noisier maps that often include background or texture noise. This difference is especially useful for auditing attention mechanisms and boundary fidelity when used together. Raw saliency shows sensitivity, sigmoid saliency shows decisions.
+
+---
+
+### Real-World Use Case
+In a dermatology AI pipeline, this overlay could help clinicians visually confirm the quality of lesion boundaries in low-confidence or borderline cases. If the focus aligns with clinically relevant features, trust is reinforced. If not, it flags potential model failure or edge-case behavior. Together, raw and sigmoid-scaled saliency offer a full-spectrum view of model behavior. Raw saliency reveals what the model notices, while sigmoid-scaled saliency shows what it actually acts on. This duality is critical for auditing feature dependence and evaluating attention mechanisms applied at intermediate convolutional layers.
+
+---
+ 
+### Disclaimer
+For research and educational use only. Visuals and insights are based on the ISIC 2018 dataset and are not clinically validated.
+
+---
 
 ![Model 1 - Saliency Map Sigmoid Output](output/sal_map_model_1_batch_a_1.png)
 
