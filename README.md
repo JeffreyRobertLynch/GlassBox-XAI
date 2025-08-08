@@ -33,7 +33,7 @@ Transparency in model decisions is essential for the safe and ethical adoption o
 
 - **Clinician Trust & Human Oversight:** Visual tools like saliency maps and Grad‑CAM help clinicians verify model reasoning at the pixel level, supporting HITL workflows and shared decision-making.
 
-- **Regulatory & Ethical Compliance:** XAI enables audit trails, bias detection, and decision transparency increasingly required by medical regulators (e.g., FDA, CE, MDR).
+- **Regulatory & Ethical Compliance:** XAI enables audit trails, bias detection, and decision transparency increasingly required by medical regulators (e.g., FDA).
 
 - **Model Debugging & Iterative Improvement** Visualizations reveal model behavior under edge cases, guiding Subject Matter Expert (SME) feedback loops during development and evaluation.
 
@@ -43,44 +43,108 @@ Transparency in model decisions is essential for the safe and ethical adoption o
 
 ## Solution Overview
 
-### Objective & Scope
-- Build a from-scratch solution to ISIC 2018, Task 1: Binary Segmentation, that matches or outperforms the top 2018 leaderboard solutions.
-- Adhere to the ISIC 2018 challenge dataset splits (Training, Validation, Test) for quantitative performance benchmarking and impose additional limitations for auditability and security.
-- Fine-tune three model variants (Dice-Optimized, Recall-Optimized, Balanced) to support flexible deployment goals.
-- Maintain full auditability, ownership, and replication using a custom architecture and no pretrained models.
-- Develop, train, test, and deploy on local hardware to ensure optimal Private Health Information (PHI) security.  
-- Integrate a robust XAI Suite to support clinical trust, regulatory compliance, human-in-the-loop workflows, and iterative improvement.
+### Project Goals
 
-### Resources & Limitations
-- **Hardware:** Modest home-lab setup (NVIDIA RTX 3080 GPU, 32 GB RAM, AMD 3700X CPU) to ensure closed system for PHI security and wide local deployment. 
-- **Timeframe:** Solo execution in ~160 Hours, approximately one month. Includes research, development, and evaluation. Excludes time spent on full documentation.
-- **Data:** Used only publicly available and anonymized ISIC 2018 dataset, no external or proprietary PHI.
-- **Security:** Entire pipeline (training, evaluation, and deployment) performed locally to protect data integrity.
-- **Reproducibility:** Portable and generalizable solution using custom-built pipeline, documented methodologically, transparent metrics, and consistent evaluation logic.
-- **Constraints:** No ensembles, transfer/pretrained learning, cloud usage, external datasets, or GPU clusters. Feasible for realistic local development and deployment with modest computational resources.  
+- Build a fully custom solution for **ISIC 2018: Task 1 – Binary Segmentation** with performance that matches or exceeds top 2018 leaderboard entries.
+- Adhere to ISIC 2018 challenge dataset splits (Training, Validation, Test) for quantitative benchmarking.
+- Impose real-world constraints to reflect clinical deployment environments:
+  - **Local-only pipeline**: Train, test, and deploy entirely on-device to ensure **PHI security**, **reproducibility**, and **offline deployability**.
+  - **No pretrained models**: Supports **full model ownership**, traceability, and end-to-end auditability.
+  - **No ensemble or high-cost methods**: Keeps **resource demands low**, enabling **deployment on modest hardware**.
+  - **No cloud or external services**: Prevents data leakage and supports **secure, private use cases**.
+  - **ISIC 2018-only training data**: Reflects **real-world limitations** in curated, domain-specific datasets.
+- Train **three specialized model variants** to explore trade-offs across **precision**, **recall**, and **balanced performance**.
+- Integrate a modular **XAI toolkit** to support **transparency**, **human-in-the-loop workflows**, and **regulatory readiness**.
 
-### Methodology
-- **Model Architecture:** Custom-built U-Net architecture with added attention mechanisms, dropout, and regularization. 
-- **Training Pipeline:** Modular data augmentation, augmentation testing, custom loss functions, callbacks, and fine-tuning at lower learning rate for variant specialization.  
-- **Model Variants:**
-  - *Dice-Optimized* — maximizes boundary accuracy   
-  - *Balanced* — balances false positives and false negatives
-  - *Recall-Optimized* — minimizes false negatives 
-- **Evaluation:** Dice Score (Dice), Intersection of Union (IoU), Precision, Recall, Pixel Accuracy, and F1 Score. Metric definitions can be found in the "Models" section. 
-- **XAI Integration:** XAI tools inspect internal decision-making at a more granular level for interpretability. These features are visualized and explained in the "Key Features" and "XAI Suite" sections.
+---
 
-### Results
-- **Performance:** *Dice-Optimized* model achieved a Dice Score of ~0.875 and an IoU score of ~0.8, matching or outperforming top 2018 solutions. Other models achieved similarly high performance within their optimization goals. Full information on performance for all models can be seen in the "Key Features" and "Models" sections.
-- **Auditability & Reproducibility:** Transparent, portable, and transferrable workflow with clear audit trail.
-- **Security:** Entire process remains on-device, protecting PHI from data leakage or breaches.
-- **XAI Integration:** GlassBox XAI is not a "black box" model. Each model’s base output is a binary mask outlining lesion vs. non-lesion regions. This can be used for detecting lesions, measuring the growth or retraction of lesions over time, and supporting clinical & surgical decisions. Beyond this, XAI features provide multi-model comparisons, confusion matrices, confidence maps, saliency maps, Grad-CAM, integrated gradients, and full end to end layer visualization. These visualization features, described in full in the "XAI Suite" section, enhance interpretability, trust, and regulatory compliance.
+### Resources
 
-### Conclusions
-GlassBox XAI demonstrates that **production-level segmentation performance** can be achieved on modest hardware without the use of pretrained models, black box limitations, or privacy trade-offs. This makes the solution deployable in local settings (e.g., clinics, research hospitals) where data security and transparency are essential.
+- **Dataset**: Only the **ISIC 2018 Task 1 dataset** was used. This set is fully anonymized and publicly released for research. The dataset contains ~3000 dermoscopic images with corresponding ground truth segmentation masks, curated for the ISIC 2018 challenge. High-quality and widely used for benchmarking.
+- **Hardware**: Local workstation with **NVIDIA RTX 3080**, **32 GB RAM**, and **AMD 3700X CPU**. No cloud or distributed compute used.
+- **Timeline**: ~160 solo development hours over 4 weeks (not including documentation).
+- **Development Context**: Developed by a solo researcher with specialization in **AI in Healthcare (Stanford University)**.
 
-GlassBox XAI delivers performance on par with or exceeding top 2018 leaderboard entries, while improving transparency, auditability, and deployment feasibility. However, it was produced in 2024 and some 2024-era systems may surpass GlassBox XAI's metrics using larger models, expanded training data, or ensemble learning — but often at the cost of transparency, auditability, security, and accessibility.
+---
 
-The trade-offs of these techniques are discussed in the "Future Work" section.
+### Performance Metrics
+
+Model performance is measured by comparing its predicted segmentations to expert-annotated ground truth masks from the test set. These test images were **not seen during training**, so they reveal how well the model can **generalize** to new, unseen cases. This is a key indicator of real-world utility.
+
+Each metric captures a different aspect of segmentation quality:
+
+- **Dice Coefficient:** Measures how well the predicted lesion area overlaps with the actual lesion. More tolerant of small boundary errors in large lesions but highly sensitive to errors in small lesions, where precision matters most. Favored in medical imaging because it aligns better with clinical priorities, where missing a small lesion can have greater consequences than imprecise edges on a large one.
+- **Intersection over Union (IoU):** Similar to Dice but stricter. Penalizes all boundary mismatches equally, regardless of lesion size. Often used as a secondary reference metric.
+- **Recall (Sensitivity):** Measures how well the model captures all true lesion areas. High recall reduces false negatives.
+- **Precision:** Measures how many of the predicted lesion areas were actually correct. High precision reduces false positives.
+- **F1 Score:** The harmonic mean of precision and recall. Useful when both over-detection and under-detection carry risk.
+- **Pixel Accuracy:** Shows the overall percentage of correctly labeled pixels. Can be misleading in medical imaging, where lesions often occupy only a small part of the image. For example, if just 10% of an image contains a lesion and the model misses it entirely, it still scores 90% accuracy.
+
+**All metrics inform model performance, but Dice is emphasized due to its closer alignment with clinical relevance and its widespread use in medical image segmentation research.**
+---
+
+### Variant Models
+
+All three models use the **same core architecture**, but were trained and fine-tuned with **different loss functions** (Dice, Tversky, Weighted Hybrid, etc.) to optimize for distinct clinical and deployment goals:
+
+- **Model 1 – Dice-Optimized:** Prioritizes high overall segmentation accuracy and maximization of the Dice Score.
+- **Model 2 – Balance-Optimized:** Seeks an even trade-off between false positives and false negatives.
+- **Model 3 – Recall-Optimized:** Minimizes false negatives, favoring sensitivity over specificity.
+
+---
+
+### Segmentation Features
+
+- **Binary Segmentation Output:** The raw model output. A binary mask showing which pixels the model identifies as lesion and which it identifies as non-lesion.
+- **Segmentation Overlay:** Predicted mask, or boundary decision, dimmed and laid over the original image for segmentation.  
+- **Image Preprocessing Pipeline:** Fifteen toggleable preprocesing techniques, such as brightness adjustment and/or dilation, can be applied to images prior to segmentation to improve model performance. These techniques have been omitted for this demo. All visuals and reported metrics reflect performance on the unaltered, baseline dataset.
+---
+
+### Comparative Model Evaluation Features
+
+- **Multi-model Segmentation Overlays:** Side-by-side visual comparison of all three model variants using the same image input. Highlights how each model handles precision, recall, and boundary decisions differently.
+- **Multi-model Test Metrics:** Full evaluation across Dice, IoU, Precision, Recall, Pixel Accuracy, and F1 Score across all models.
+- **Confusion Matrices:** Pixel-level false positive, false negative, true positive, and true negative rates for the entire test set across all models. Shows decision patterns & priorities.
+
+---
+
+### XAI Features
+
+- **Confidence Maps:** Heatmap showing model confidence in its decisions across different regions of an image.
+- **Saliency Maps:** Highlights which pixels were most influential to the model's decision.  
+- **Integrated Gradients:** Quantifies each pixel's contribution to the final output by comparing it to a baseline. 
+- **Grad-CAM Visualizations**: End-to-end visualization of all convolutional layers as a progression from input to output. Divided into encoder, attention, decoder, and output stages to show how segmentation decisions evolve through the network.
+
+---
+
+### Model Metrics
+
+| Model              | Dice     | IoU      | Precision | Recall   | Pixel Accuracy | F1 Score |
+|-------------------|----------|----------|-----------|----------|----------------|----------|
+| **Dice-Optimized**   | **0.8751** | **0.8000** | **0.9028**  | 0.8291   | **0.9272**      | 0.8644   |
+| **Balance-Optimized**| 0.8734   | 0.7925   | 0.8787    | 0.8564   | 0.9267         | **0.8674** |
+| **Recall-Optimized** | 0.8573   | 0.7669   | 0.8280    | **0.8936** | 0.9182         | 0.8595   |
+
+---
+
+### Solution Summary
+
+GlassBox XAI achieves **Dice 0.8751** and **IoU 0.8000**, meeting or exceeding top entries from the ISIC 2018 leaderboard—**without relying on pretrained models, external data, or ensemble methods**. While some modern models (2024–2025) may report Dice scores above 0.90, these often depend on substantial computational resources, cloud infrastructure, or proprietary datasets.
+
+By contrast, GlassBox was developed **entirely from scratch**, trained on limited data, and runs **securely on local hardware**, with **end-to-end auditability**. It is suitable for real-world clinical deployment where **privacy, traceability, and ownership** are critical design factors.
+
+In short, the system delivers **high-tier performance under realistic clinical constraints**, while also offering **powerful visual diagnostics**, **exceptional model transparency**, and **flexible, local deployability**—capabilities not often found in more opaque, resource-intensive solutions.
+
+These trade-offs—and potential development paths for GlassBox XAI—are discussed further in the **Future Work** section.
+
+
+GlassBox XAI achieves **Dice 0.8751** and **IoU 0.8000**, meeting or exceeding top entries from the ISIC 2018 leaderboard, **without relying on pretrained models, external data, or ensemble methods**. While some modern models (2024–2025) may report Dice scores above 0.90, these typically require computationally expensive techniques, substantial cloud infrastructure, or proprietary data pipelines.
+
+By contrast, GlassBox was developed **entirely from scratch**, trained on limited data, and runs **securely on local hardware** with **end-to-end auditability**. It is suitable for real-world clinical deployment where **privacy, traceability, and model ownership** are critical design factors.
+
+In short, this system delivers **high-tier performance under realistic clinical constraints**, while also offering **powerful visual diagnostics**, **exceptional model transparency**, and **flexibile, local deployability** not often found in more opaque, compute-heavy solutions.
+
+These trade offs, and potential development paths for GlassBox XAI, are explored more thoroughly in the "Future Work" section.
 
 ---
 
@@ -262,16 +326,6 @@ To further improve accuracy, especially in challenging or noisy images, **attent
 - Each variant was fine-tuned using different loss functions: Dice Loss, Tversky Loss, or Hybrid Dice-Tversky Loss.
 
 ---
-
-### Metrics Explained
-- **Dice Coefficient** measures how well the predicted lesion area overlaps with the actual lesion. IT is especially sensitive to errors in small lesions and is a standard metric in medical image segmentation.
-- **Intersection over Union (IoU)**	is a stricter version of Dice. Penalizes all boundary mismatches equally, which can underrepresent small or subtle lesions.
-- **Recall (Sensitivity)** measures how well the model captures all lesion areas. Crucial in medical contexts, where missing even a small lesion could be risky.
-- **Precision**	measures how many predicted lesion areas were correct. Helps avoid false alarms that could lead to unnecessary concern or procedures.
-- **F1 Score** balances precision and recall. Useful when both missing and over-detecting lesions have consequences.
-- **Pixel Accuracy** shows the overall percentage of correctly labeled pixels. Can be misleading in medical imaging, where lesions may be a small part of the image.
-
-**All metrics contribute to measuring performance, but Dice is emphasized due to its greater alignment with decision-support needs and regulatory expectations.**
 
 ### Model Performance Comparison
 
