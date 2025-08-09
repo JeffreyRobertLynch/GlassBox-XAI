@@ -296,7 +296,7 @@ This visualization shows the model’s segmentation prediction overlaid with a h
 
 ---
 
-### What This Tells Us
+#### What This Tells Us
 
 - **Deep red lesion center:** High confidence in core lesion area.
 
@@ -310,7 +310,7 @@ But pay particular attention to the difference between images 4, 5, and 6 compar
 
 ---
 
-### Why It Matters
+#### Why It Matters
 - **Pinpoints areas of uncertainty** to help human reviewers identify where predictions may need manual verification.
 
 - **Supports HITL** workflows through auditing, especially in borderline or ambiguous cases.
@@ -319,17 +319,17 @@ But pay particular attention to the difference between images 4, 5, and 6 compar
 
 ---
 
-### Technical Note
+#### Technical Note
 Superpixels are generated using the SLIC algorithm to divide the image into super-pixel regions. Confidence values are calculated by averaging the model’s probability outputs within each region, resulting in a smoother and more interpretable heatmap.
 
 ---
 
-### Real-World Use Case
+#### Real-World Use Case
 This overlay could help a dermatologist triage ambiguous cases. Low-confidence boundaries may prompt further review, while high-confidence regions offer reassurance. This supports risk-aware decision-making and calibrates trust in model outputs on a per-image, or even per-region, basis.
 
 ---
 
-### Disclaimer
+#### Disclaimer
 This system is for research and educational use only. Visuals and insights are based on the ISIC 2018 dataset and are not clinically validated.
 
 ---
@@ -338,15 +338,15 @@ This system is for research and educational use only. Visuals and insights are b
 
 ---
 
-## Saliency Map Overlay - Raw Logits - Model 1 - Batch A
+### Saliency Map Overlay - Raw Logits - Model 1 - Batch A
 
 ---
 
-This visualization highlights where the model is most sensitive to small changes in the input image. Each pixel is color-coded based on the gradient magnitude flowing from the raw logits (pre-sigmoid output) with respect to the input. The result is a high-resolution "sensitivity heatmap" showing all areas the model reacts to whether helpful, distracting, or irrelevant.
+This visualization highlights where the model is most sensitive to small changes in the input image. Each pixel is color-coded based on the gradient magnitude flowing from the raw logits (pre-sigmoid output) with respect to the input. The result is a high-resolution "sensitivity heatmap" showing all areas the model reacts to whether helpful, distracting, or irrelevant. For example, we notice that non-lesion objects, like hairs, are consistently hot pixels here but these do not affect or confuse the model's final output.
 
 ---
 
-### What This Tells Us
+#### What This Tells Us
 - **Clusters of “hot” pixels:** Regions the model is highly sensitive to, often aligned with textures or segmentation boundaries.
 
 - **Sensitivity outside the lesion:** Includes background features the model reacts to, such as lighting patterns or skin texture.
@@ -359,7 +359,7 @@ Again, pay particular attention to images 4, 5, and 6 compared to the others. Im
 
 ---
 
-### Why It Matters
+#### Why It Matters
 - **Exposes early model behavior** during R&D and debugging phases to identify spurious correlations (e.g., hair, shadows, borders).
 
 - **Improves trust & safety** by revealing if a model is overly sensitive to irrelevant signals, overshadowing or distorting more relevant signals.
@@ -368,17 +368,17 @@ Again, pay particular attention to images 4, 5, and 6 compared to the others. Im
 
 ---
 
-### Technical Note
+#### Technical Note
 Gradients are computed using TensorFlow’s GradientTape, capturing how small input changes influence the raw logits. This is achieved by cloning the model and temporarily removing the sigmoid activation from the output layer during backpropagation, allowing direct access to the raw logits. This method can appear noisy and doesn't necessarily represent final prediction logic. This is addressed in sigmoid-scaled saliency and integrated gradient techniques.
 
 ---
 
-### Real-World Use Case
+#### Real-World Use Case
 In a research workflow, an ML engineer or clinical auditor might use this map to detect whether the model is reacting to imaging artifacts or unintended features. For example, consistent sensitivity to non-lesion areas could inform dataset refinement, retraining with augmentation, or model regularization. Additionally, we can use this to determine the effectiveness of attention mechanisms. Does a noisy image here ultimately lead to a clear, accurate, segmentation boundary?
 
 ---
 
-### Disclaimer
+#### Disclaimer
 For research and educational use only. Visuals and insights are based on the ISIC 2018 dataset and are not clinically validated.
 
 ---
@@ -387,7 +387,7 @@ For research and educational use only. Visuals and insights are based on the ISI
 
 ---
 
-## Saliency Map Overlay - Sigmoid-Scaled - Model 1 - Batch A
+### Saliency Map Overlay - Sigmoid-Scaled - Model 1 - Batch A
 
 ---
 
@@ -395,7 +395,7 @@ This visualization is much less noisy than the previous saliency map because the
 
 ---
 
-### What This Tells Us
+#### What This Tells Us
 - **Lesion boundary:** A thin, high-intensity band of pixels outlines the model’s segmentation decision.
 
 - **Interior & background:** Remain mostly blue (low gradient), showing low influence on the final outcome.
@@ -408,7 +408,7 @@ Image 6, which was slightly oversegmented but still strongly aligned in shape, l
 
 ---
 
-### Why It Matters
+#### Why It Matters
 - **Improves interpretability** by aligning attribution with the model’s actual output (post-activation), not just internal activations.
 
 - **Highlights decisive features** rather than noisy sensitivities, making it easier for clinicians or auditors to validate the reasoning.
@@ -417,17 +417,17 @@ Image 6, which was slightly oversegmented but still strongly aligned in shape, l
 
 ---
 
-### Technical Note
+#### Technical Note
 This saliency map is computed using gradients derived from the sigmoid output, not raw logits. This constrains gradients to the final prediction layer, filtering out noisy activations. Compared to raw saliency, this produces smoother, cleaner, and more decision-aligned visualizations. Sigmoid-scaled saliency limits attention to the model’s final confidence output. Raw saliency highlights all input regions that influence internal activations, resulting in broader, noisier maps that often include background or texture noise. This difference is especially useful for auditing attention mechanisms and boundary fidelity when used together. Raw saliency shows sensitivity, sigmoid saliency shows decisions.
 
 ---
 
-### Real-World Use Case
+#### Real-World Use Case
 In a dermatology AI pipeline, this overlay could help clinicians visually confirm the quality of lesion boundaries in low-confidence or borderline cases. If the focus aligns with clinically relevant features, trust is reinforced. If not, it flags potential model failure or edge-case behavior. Together, raw and sigmoid-scaled saliency offer a full-spectrum view of model behavior. Raw saliency reveals what the model notices, while sigmoid-scaled saliency shows what it actually acts on. This duality is critical for auditing feature dependence and evaluating attention mechanisms applied at intermediate convolutional layers.
 
 ---
  
-### Disclaimer
+#### Disclaimer
 For research and educational use only. Visuals and insights are based on the ISIC 2018 dataset and are not clinically validated.
 
 ---
@@ -436,7 +436,49 @@ For research and educational use only. Visuals and insights are based on the ISI
 
 ---
 
-#### Integrated Gradients Overlay - Model 1 - Batch A
+### Integrated Gradients Overlay - Model 1 - Batch A
+
+This visualization highlights the cumulative influence of each pixel on the model’s final segmentation decision, computed by tracing a path from a baseline (blank) image to the actual input. The result is a smoother, more stable attribution map compared to instantaneous saliency techniques. Integrated Gradients don’t just show what the model is sensitive to; they reveal which input features actually caused the prediction, traced along a path from blank input to final decision.
+
+---
+
+#### What This Tells Us
+- **Bright, saturated regions:** These pixels consistently contributed to the model’s prediction as the image was progressively revealed and should correspond to the lesion.
+
+- **Dark or desaturated regions:** These pixels had little to no effect on the model’s decision, suggesting they were ignored or discounted.
+
+This reflects not just sensitivity, but causality. The full set of input regions the model relied on to reach its final output. Unlike the raw logits saliency maps, hot spots here do not align with misleading features, like hairs. 
+
+Most images are remarkably consistent here, hot spots are correlated with the lesion. Image 4 is diffuse and a clear outlier, however. Most likely due to the presence of multiple differently colored lesion areas in one image. An edge case that can be understood and addressed through input preprocessing, expanding train data, or additional data augmentation.   
+
+---
+
+#### Why It Matters
+- **Reduces noise** compared to raw saliency methods, offering more stable attribution maps.
+
+- **Highlights causal contributions** instead of just attention or sensitivity, supporting model explainability during audits.
+
+- **Improves interpretability in edge-cases** where gradients alone may be misleading or noisy.
+
+Integrated gradients, alongside raw and sigmoid saliency, distinguish between what the model reacts to, what it acts on, and what it ultimately bases its decision on.
+
+---
+
+#### Technical Note
+Like the raw logits saliency map, IG is applied to the model’s pre-sigmoid logits to ensure faithful attribution. Integrated gradients computes an attribution map by interpolating between a baseline image (blank) and the input image, calculating gradients at each step and summing them along the path. Fulfills theoretical axioms like sensitivity and implementation invariance, making it one of the most principled attribution methods in XAI literature. 
+
+---
+
+#### Real-World Use Case
+In a dermatology AI pipeline, Integrated Gradients can help validate that a model is grounded in the right lesion features when raw saliency is too noisy or unclear. It can also reveal subtle dependencies on shape, texture, or contrast that affect generalization across skin tones, lighting conditions, or imaging devices. When used alongside saliency and confidence maps, model behavior can be interpreted through three complementary lenses: sensitivity, decision confidence, and causal attribution.
+
+
+---
+
+#### Disclaimer
+This visualization is for research and educational purposes only. Visuals and insights are based on the ISIC 2018 dataset and are not clinically validated.
+
+---
 
 ![Model 1 - Integrated Gradients Output](output/int_grad_model_1_batch_a_1.png)
 
