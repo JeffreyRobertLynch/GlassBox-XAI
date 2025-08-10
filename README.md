@@ -265,13 +265,13 @@ Understanding how and why a model makes its predictions is essential for trust, 
 
 This section introduces a suite of interpretability tools designed to help researchers, clinicians, and auditors explain, interrogate, and validate model behavior beyond raw performance metrics. These include:
 
-- Pixel-level confidence maps
+- **Superpixel Confidence Overlay** for spatial model confidence.
 
-- Saliency visualizations (raw and sigmoid-scaled)
+- **Saliency Overlay (Raw Logits and Sigmoid-Scaled)** for sensitivity and decision contribution.
 
-- Integrated gradients for attribution
+- **Integrated Gradients Overlay** for robust attribution.
 
-- Full Grad-CAM layer-wise progression from input to output
+- **Decision Path Visualization via Layer-wise Grad-CAM** for full progression from input to output.
 
 Each method highlights a different aspect of the model's internal decision-making, allowing us to ask critical questions:
 
@@ -289,43 +289,57 @@ Each method highlights a different aspect of the model's internal decision-makin
 
 Whether auditing model attention, evaluating edge cases, or designing a transparent system for actionable human-in-the-loop (HITL) decision support, **XAI is foundational**.
 
+We will continue using Batch A, the average performance set of images, an an example. Pay particular attention to the difference between the images the model segments precisely and images 4 and 5 (which were undersegmented) and 6 (which was slightly oversegmented, but precise in shape).
+
 ---
 
-### Confidence Map Overlay - Model 1 - Batch A
-This visualization shows the model’s segmentation prediction overlaid with a heatmap of per-pixel confidence, grouped into superpixels (clusters of visually similar pixels). Each region is color-coded based on how confidently the model believes it is part of the lesion (positive class).
+### Superpixel Confidence Overlay
+This visualization shows the model’s segmentation prediction overlaid with a heatmap of per-pixel confidence, grouped into superpixels (clusters of visually similar pixels). Each region is color-coded based on how confidently the model believes it is part of the lesion (positive class). This breaks a segmentation decision into parts, showing where the model has high confidence and where the model has low confidence.
 
 ---
 
 #### What This Tells Us
 
-- **Deep red lesion center:** High confidence in core lesion area.
+- **Deep red:** Very high confidence. Typically in core lesion area.
 
-- **Orange-yellow-green-blue borders:** Varying confidence near lesion edges (as expected).
+- **Orange-yellow-green-blue:** Varying confidence near lesion edges, as expected.
 
-- **Clear blue background:** High confidence that surrounding skin is not part of the lesion.
-
-This behavior is exactly what we expect. High confidence in the lesion core, more uncertainty at boundaries, and strong rejection of background regions for all images. 
-
-But pay particular attention to the difference between images 4, 5, and 6 compared to the others. When we examined the metrics earlier, we saw images 4 and 5 were undersegmented compared to the expert annotation. Image 6 was slightly oversegmented, but still had excellent shape alignment.  
+- **Clear blue background:** High confidence that this area is not part of the lesion. 
 
 ---
 
 #### Why It Matters
 - **Pinpoints areas of uncertainty** to help human reviewers identify where predictions may need manual verification.
 
-- **Supports HITL** workflows through auditing, especially in borderline or ambiguous cases.
+- **Supports HITL** workflows by letting a human expert know how much weight to give the model's individual predictions, especially in borderline or ambiguous cases.
 
 - **Debugging & QA** during development iterations to detect patterns, edge cases, and failure modes like overconfidence in incorrect segmentaton decisions.
 
 ---
 
+#### Superpixel Confidence Overlay - Batch A
+
+![Model 1 - Confidence Map Output](output/conf_map_model_1_batch_a_1.png)
+
+---
+
+#### Insights
+
+This behavior is exactly what we expect. High confidence in the lesion core, more uncertainty at boundaries, and strong rejection of background regions for all images. Even well-trained segmentation models will experience some uncertainty as to where the exact boundary should be. It is inherently much easier to identify the core of the lesion than exactly where it ends.
+
+Notice the difference between images 4, 5, and 6 compared to the others. We see more uncertainty in these images than the others. When we examined the metrics earlier, we saw images 4 and 5 were undersegmented compared to the expert annotation. Image 6 was slightly oversegmented, but still had excellent shape alignment. 
+
+The images with smaller lesions have less uncertainty around the border. This makes sense, as we are using Model 1 - Dice-Optimized. It was trained using a Dice loss function, which penalized errors on small lesions more than errors on large lesions. This specialization is important because an error on a large lesion results in detection of the lesion but with imperfect segmentation. This is much less likely to lead to negative consequences than missing a small lesion entirely. 
+
+---
+
 #### Technical Note
-Superpixels are generated using the SLIC algorithm to divide the image into super-pixel regions. Confidence values are calculated by averaging the model’s probability outputs within each region, resulting in a smoother and more interpretable heatmap.
+Superpixels are generated using the SLIC algorithm to divide the image into super-pixel regions. Confidence values are calculated by averaging the model’s probability outputs within each region, resulting in a smoother and more interpretable heatmap. My understanding is that this technique is not common practice, but it seems obvious to me in technical implementation and HITL utility. I could not find equivalent examples of this, or standard terminology, for citation.  
 
 ---
 
 #### Real-World Use Case
-This overlay could help a dermatologist triage ambiguous cases. Low-confidence boundaries may prompt further review, while high-confidence regions offer reassurance. This supports risk-aware decision-making and calibrates trust in model outputs on a per-image, or even per-region, basis.
+This overlay could help a dermatologist triage ambiguous cases. Low-confidence boundaries may prompt further review, while high-confidence regions offer reassurance. This supports risk-aware decision-making and calibrates trust in model outputs on a per-image, or even per-region, basis. Even high-performance models make mistakes. This overlay allows experts to know when, and even where, model output should be given higher or lower trust. 
 
 ---
 
@@ -334,15 +348,9 @@ This system is for research and educational use only. Visuals and insights are b
 
 ---
 
-![Model 1 - Confidence Map Output](output/conf_map_model_1_batch_a_1.png)
+### Saliency Map Overlay - Raw Logits
 
----
-
-### Saliency Map Overlay - Raw Logits - Model 1 - Batch A
-
----
-
-This visualization highlights where the model is most sensitive to small changes in the input image. Each pixel is color-coded based on the gradient magnitude flowing from the raw logits (pre-sigmoid output) with respect to the input. The result is a high-resolution "sensitivity heatmap" showing all areas the model reacts to whether helpful, distracting, or irrelevant. For example, we notice that non-lesion objects, like hairs, are consistently hot pixels here but these do not affect or confuse the model's final output.
+This visualization highlights where the model is most sensitive to small changes in the input image. Each pixel is color-coded based on the gradient magnitude flowing from the raw logits (pre-sigmoid output) with respect to the input. The result is a high-resolution "sensitivity heatmap" showing all areas the model reacts to whether helpful, distracting, or irrelevant. For example, we notice that non-lesion objects, like hairs, are consistently hot pixels here but these do not affect or confuse the model's final output. We will see why this is further down the XAI pipeline.
 
 ---
 
@@ -353,10 +361,6 @@ This visualization highlights where the model is most sensitive to small changes
 
 - **Wide attribution scope:** Captures all contributing input signals, not just the ones the model ultimately trusts in its final prediction.
 
-This gives us a raw view of influence without filtering. Valuable for understanding early-stage model behavior or unwanted signal dependencies. Under close examination of noisy heatmaps, we can see that the hottest pixels generally correspond to segmentation boundaries. This will become clearer when we look at sigmoid-scaled saliency maps. 
-
-Again, pay particular attention to images 4, 5, and 6 compared to the others. Images 4 and 5 were undersegmented. Image 6 was slightly oversegmented.  
-
 ---
 
 #### Why It Matters
@@ -364,17 +368,31 @@ Again, pay particular attention to images 4, 5, and 6 compared to the others. Im
 
 - **Improves trust & safety** by revealing if a model is overly sensitive to irrelevant signals, overshadowing or distorting more relevant signals.
 
-- **Enables data-driven fixes** as “hot spots” in irrelevant areas may signal a need for improved data augmentation, normalization, pre-processing techniques, or annotation quality.
+- **Enables data-driven fixes** as “hot spots” in irrelevant areas may signal a need for improved data augmentation, attenton mechanisms, pre-processing techniques, annotation quality, or fine tuning on edge cases.
+
+---
+
+#### Saliency Map Overlay - Raw Logits - Model 1 - Batch A
+
+![Model 1 - Saliency Map Logits Output](output/sal_map_model_1_batch_a_1_raw.png)
+
+---
+
+#### Insights
+
+This gives us a raw view of influence without filtering. Valuable for understanding early-stage model behavior or unwanted signal dependencies. Under close examination of noisy heatmaps, we can see that the hottest pixels generally correspond to segmentation boundaries. 
+
+Notice how images 4, 5, and 6 are noisier than the images the model segments precisely. Also, notice how misleading non-lesion features, like hair or shadows, create hot pixels here but do not affect the accuracy of the model's final output. This will become clearer when we look at sigmoid-scaled saliency overlays next.
 
 ---
 
 #### Technical Note
-Gradients are computed using TensorFlow’s GradientTape, capturing how small input changes influence the raw logits. This is achieved by cloning the model and temporarily removing the sigmoid activation from the output layer during backpropagation, allowing direct access to the raw logits. This method can appear noisy and doesn't necessarily represent final prediction logic. This is addressed in sigmoid-scaled saliency and integrated gradient techniques.
+Gradients are computed using TensorFlow’s GradientTape, capturing how small input changes influence the raw logits. This is achieved by cloning the model and temporarily removing the sigmoid activation from the output layer during backpropagation, allowing direct access to the raw logits. This method can appear noisy and doesn't necessarily represent final prediction logic. This is addressed in sigmoid-scaled saliency and integrated gradient techniques, and how they all work together synergistically.
 
 ---
 
 #### Real-World Use Case
-In a research workflow, an ML engineer or clinical auditor might use this map to detect whether the model is reacting to imaging artifacts or unintended features. For example, consistent sensitivity to non-lesion areas could inform dataset refinement, retraining with augmentation, or model regularization. Additionally, we can use this to determine the effectiveness of attention mechanisms. Does a noisy image here ultimately lead to a clear, accurate, segmentation boundary?
+In a research workflow, an ML engineer or clinical auditor might use this map to detect whether the model is reacting to imaging artifacts or unintended features. For example, consistent sensitivity to non-lesion areas could inform dataset refinement, retraining with augmentation, or model regularization. Additionally, we can use this to determine the effectiveness of model architecture, attention mechanisms, and feature engineering. Does a noisy image here ultimately lead to a clear, accurate, segmentation boundary?
 
 ---
 
@@ -383,11 +401,7 @@ For research and educational use only. Visuals and insights are based on the ISI
 
 ---
 
-![Model 1 - Saliency Map Logits Output](output/sal_map_model_1_batch_a_1_raw.png)
-
----
-
-### Saliency Map Overlay - Sigmoid-Scaled - Model 1 - Batch A
+### Saliency Map Overlay - Sigmoid-Scaled
 
 ---
 
@@ -396,29 +410,41 @@ This visualization is much less noisy than the previous saliency map because the
 ---
 
 #### What This Tells Us
-- **Lesion boundary:** A thin, high-intensity band of pixels outlines the model’s segmentation decision.
+- **Lesion boundary:** A thin band of pixels outlines the model’s segmentation decision.
 
-- **Interior & background:** Remain mostly blue (low gradient), showing low influence on the final outcome.
-
-Optimally, the model is not reacting broadly to irrelevant textures or lighting but is instead making sharp, boundary-based decisions. We see this clearly in the majority of images, where segmentation quality was excellent. 
-
-However, compare images 4 and 5 to the majority. A much different pattern than the majority. A clustering of hot pixels versus clear segmentation outlines. 
-
-Image 6, which was slightly oversegmented but still strongly aligned in shape, looks fairly clean here. More comparable to the majority than images 4 and 5. 
+- **Interior & background:** Remain mostly blue (low gradient), showing low influence on the final segmentation decision. The model knows the interior is part of the lesion, of course, but its segmentation decision is based on where the edges are.
 
 ---
 
 #### Why It Matters
 - **Improves interpretability** by aligning attribution with the model’s actual output (post-activation), not just internal activations.
 
-- **Highlights decisive features** rather than noisy sensitivities, making it easier for clinicians or auditors to validate the reasoning.
+- **Highlights decisive features** rather than noisy sensitivities, making it easier for clinicians or auditors to validate the reasoning. 
 
 - **Strong HITL value** in expert review settings. Boundary-focused saliency supports targeted oversight of lesion delineation quality, particularly when compared and contrasted with raw logit saliency maps for the same input image.
 
 ---
 
+#### Saliency Map Overlay - Sigmoid-Scaled - Model 1 - Batch A
+
+![Model 1 - Saliency Map Sigmoid Output](output/sal_map_model_1_batch_a_1.png)
+
+---
+
+#### Insights
+
+Optimally, the model is not reacting broadly to irrelevant textures or lighting but is instead making sharp, boundary-based decisions. We see this clearly in the majority of images, where segmentation quality was excellent. 
+
+However, compare images 4 and 5 to the majority. A much different pattern than the majority. A clustering of hot pixels versus clear segmentation outlines. 
+
+Image 6, which was slightly oversegmented but still strongly aligned in shape, looks fairly clean here and more comparable to the majority than images 4 and 5. 
+
+---
+
 #### Technical Note
-This saliency map is computed using gradients derived from the sigmoid output, not raw logits. This constrains gradients to the final prediction layer, filtering out noisy activations. Compared to raw saliency, this produces smoother, cleaner, and more decision-aligned visualizations. Sigmoid-scaled saliency limits attention to the model’s final confidence output. Raw saliency highlights all input regions that influence internal activations, resulting in broader, noisier maps that often include background or texture noise. This difference is especially useful for auditing attention mechanisms and boundary fidelity when used together. Raw saliency shows sensitivity, sigmoid saliency shows decisions.
+This saliency map is computed using gradients derived from the sigmoid output, not raw logits. This constrains gradients to the final prediction layer, filtering out noisy activations. Compared to raw saliency, this produces smoother, cleaner, and more decision-aligned visualizations. Sigmoid-scaled saliency limits attention to the model’s final confidence output. Raw saliency highlights all input regions that influence internal activations, resulting in broader, noisier maps that often include background or texture noise. This difference is especially useful for auditing attention mechanisms and boundary fidelity when used together.
+
+This implementation for saliency is not standard, and perhaps should not be called a saliency map at all. Standard implementation is what we did previously, using raw logits. However, so long as we understand the difference between what the two maps are showing, both are useful XAI techniques. Raw saliency shows sensitivity, sigmoid saliency shows decisions.
 
 ---
 
@@ -432,24 +458,16 @@ For research and educational use only. Visuals and insights are based on the ISI
 
 ---
 
-![Model 1 - Saliency Map Sigmoid Output](output/sal_map_model_1_batch_a_1.png)
+### Integrated Gradients Overlay
 
----
-
-### Integrated Gradients Overlay - Model 1 - Batch A
-
-This visualization highlights the cumulative influence of each pixel on the model’s final segmentation decision, computed by tracing a path from a baseline (blank) image to the actual input. The result is a smoother, more stable attribution map compared to instantaneous saliency techniques. Integrated Gradients don’t just show what the model is sensitive to; they reveal which input features actually caused the prediction, traced along a path from blank input to final decision.
+This visualization highlights the cumulative influence of each pixel on the model’s final segmentation decision, computed by tracing a path from a baseline (blank) image to the actual input. The result is a smoother, more stable attribution map compared to instantaneous saliency techniques. Integrated Gradients don’t just show what the model is sensitive to. They reveal which input features actually caused the prediction, traced along a path from blank input to final decision. Integrated gradients, alongside raw and sigmoid saliency, distinguish between what the model reacts to, what it acts on, and what it ultimately bases its decision on.
 
 ---
 
 #### What This Tells Us
 - **Bright, saturated regions:** These pixels consistently contributed to the model’s prediction as the image was progressively revealed and should correspond to the lesion.
 
-- **Dark or desaturated regions:** These pixels had little to no effect on the model’s decision, suggesting they were ignored or discounted.
-
-This reflects not just sensitivity, but causality. The full set of input regions the model relied on to reach its final output. Unlike the raw logits saliency maps, hot spots here do not align with misleading features, like hairs. 
-
-Most images are remarkably consistent here, hot spots are correlated with the lesion. Image 4 is diffuse and a clear outlier, however. Most likely due to the presence of multiple differently colored lesion areas in one image. An edge case that can be understood and addressed through input preprocessing, expanding train data, or additional data augmentation.   
+- **Dark or desaturated regions:** These pixels had little to no effect on the model’s decision, suggesting they were ignored or discounted. 
 
 ---
 
@@ -460,18 +478,30 @@ Most images are remarkably consistent here, hot spots are correlated with the le
 
 - **Improves interpretability in edge-cases** where gradients alone may be misleading or noisy.
 
-Integrated gradients, alongside raw and sigmoid saliency, distinguish between what the model reacts to, what it acts on, and what it ultimately bases its decision on.
+---
+
+#### Integrated Gradients Overlay - Model 1 - Batch A
+
+![Model 1 - Integrated Gradients Output](output/int_grad_model_1_batch_a_1.png)
+
+---
+
+#### Insights
+Unlike what we saw in the raw logits saliency maps, hot spots here do not align with misleading features (hairs, shadows, etc.). We know the model noticed these features, from the raw logits saliency maps, but we also know these features were ultimately judged to be misleading, from the integrated gradients maps. Here we see how robust XAI techniques work together to reveal how models make decisions at a granular level. And we can examine this even further with when we look at the next section, Decision Path Visualization via Layer-wise Grad-CAM.
+
+Most images are remarkably consistent here. High-importance regions (green/yellow clusters) largely coincide with lesion boundaries and internal texture, even in difficult cases. For example, Image 3 shows a tight, centralized attribution corresponding precisely to a small lesion. Images 1, 2, 7, and 8 also show well-localized attribution consistent with lesion contours. Meanwhile, Image 6 exhibits broader but clear attribution, aligning with its mild oversegmentation but precise shape. 
+
+Image 4 is diffuse and a clear outlier, however. Most likely due to the presence of two clearly different colors in one lesion. An edge case that can be understood and addressed through input preprocessing, expanding training data, or additional data augmentation. Overall, the integrated gradients confirm the model is prioritizing relevant visual features, and supports prior XAI observations.
 
 ---
 
 #### Technical Note
-Like the raw logits saliency map, IG is applied to the model’s pre-sigmoid logits to ensure faithful attribution. Integrated gradients computes an attribution map by interpolating between a baseline image (blank) and the input image, calculating gradients at each step and summing them along the path. Fulfills theoretical axioms like sensitivity and implementation invariance, making it one of the most principled attribution methods in XAI literature. 
+Like the raw logits saliency map, IG is applied to the model’s pre-sigmoid logits to ensure faithful attribution. Integrated gradients computes an attribution map by interpolating between a baseline image (blank) and the input image, calculating gradients at each step and summing them along the path. Unlike raw gradients, this method integrates over scaled versions of the input, producing more stable and meaningful attributions. One of the most robust attribution methods in XAI literature. 
 
 ---
 
 #### Real-World Use Case
 In a dermatology AI pipeline, Integrated Gradients can help validate that a model is grounded in the right lesion features when raw saliency is too noisy or unclear. It can also reveal subtle dependencies on shape, texture, or contrast that affect generalization across skin tones, lighting conditions, or imaging devices. When used alongside saliency and confidence maps, model behavior can be interpreted through three complementary lenses: sensitivity, decision confidence, and causal attribution.
-
 
 ---
 
@@ -480,31 +510,165 @@ This visualization is for research and educational purposes only. Visuals and in
 
 ---
 
-![Model 1 - Integrated Gradients Output](output/int_grad_model_1_batch_a_1.png)
+### Decision Path Visualization via Layer-wise Grad-CAM
+This visualization illustrates how different parts of an image influence the model’s segmentation decision across its entire architecture. We follow a batch of images from input to final output. At each major stage (encoder, attention bottleneck, decoder, output), we apply Grad-CAM to highlight spatial regions that most strongly affect the model's prediction.
+
+These heatmaps reflect class-specific activation relevance, revealing how the model’s internal focus evolves layer by layer and solidifies into a segmentation decision.
+
+#### What This Tells Us
+- **Warm Regions:** Areas of strong positive activation for the predicted class
+
+- **Cool Regions:** Areas of low activation.
+
+- **Note:** Different layers focus on different features, especially in the encoder layers. We do not expect to see broad activation during feature extraction. 
 
 ---
 
-#### Grad-CAM: Encoder Layers - Model 1 - Batch A
+#### Why It Matters
+
+- **Provides an end-to-end** look at internal activations across any decision the model makes. Rare in modern AI.
+
+- **Enables auditability** through analyzing where errors occur or where edge cases deviate from expected behavior. 
+
+- **Trust calibration** helps human experts understand whether the model is reasoning in a way that aligns with clinical or domain-specific logic.
+
+- **Granular model analysis** reveals opportunities for iterative improvement. Unstable stages can be identified and architecture fine tuned.
+
+---
+
+#### Technical Note
+Grad-CAM (Gradient-weighted Class Activation Mapping) is a visualization technique that highlights which parts of an input image most influence a model’s prediction. It works by backpropagating gradients from the output layer to specific convolutional layers and weighting those activations by their importance to the final decision.
+
+Grad-CAM is most commonly applied to image classification models, where it reveals which image regions contributed most to a predicted class (e.g., Dog vs. Cat). In such models, a single label is predicted for the entire image, and the Grad-CAM heatmap explains the basis for that classification.
+
+In contrast, GlassBox XAI is a segmentation model, where classification is performed at the pixel level to distinguish lesion from non-lesion regions. While the prediction output is spatial (a mask), each pixel still represents a classification and Grad-CAM can be extended to this context.
+
+In this implementation, Grad-CAM is applied at four major layer groups: Encoder, Attention Bottleneck, Decoder, and Output Layer. This layer-wise view tracks how the model's spatial focus evolves across the entire architecture. It allows us to visualize how low-level features are detected, how attention is modulated, and how these features are reassembled into a final segmentation decision.
+
+---
+
+#### Real-World Use Case
+A dermatologist reviewing model predictions can use these heatmaps to verify whether internal reasoning aligns with known lesion features. For instance, if the model strongly activates around hairs or shadows, that may warrant caution or fine-tuning if these features are not ultimately disregarded in the final output.
+
+Developers can isolate and analyze architecture components to better understand behavior:
+
+Is the attention gate filtering appropriately?
+
+Does the decoder preserve relevant detail?
+
+What changes when the attention mechanism is disabled or modified?
+
+This approach supports HITL workflows, interpretability, and model debugging in regulated or safety-critical domains. 
+
+---
+
+#### Disclaimer
+These visualizations are for research and educational purposes only. Visuals and insights are based on the ISIC 2018 dataset and are not clinically validated.
+
+---
+
+#### Decision Path Visualization via Layer-wise Grad-CAM - Encoder Layers - Model 1 - Batch A
+
+Encoder stages start broadly, highlighting edges, texture, and contrast across the whole lesion and surrounding skin.
 
 ![Model 1 - Grad-CAM Encoder Layer Output](output/layer_enc_model_1_batch_a_1.png)
 
 ---
 
-#### Grad-CAM: Attention Layers - Model 1 - Batch A
+#### Decision Path Visualization via Layer-wise Grad-CAM - Bottleneck Attention Layers - Model 1 - Batch A
+
+The attention bottleneck filters this information, suppressing irrelevant signals like shadows and amplifying central lesion features.
 
 ![Model 1 - Grad-CAM Attention Layer Output](output/layer_att_model_1_batch_a_1.png)
 
 ---
 
-#### Grad-CAM: Decoder Layers - Model 1 - Batch A
+#### Decision Path Visualization via Layer-wise Grad-CAM - Decoder Layers - Model 1 - Batch A
+
+Decoder layers progressively rebuild spatial precision — attention tightens toward the lesion's actual shape.
 
 ![Model 1 - Grad-CAM Decoder Layer Output](output/layer_dec_model_1_batch_a_1.png)
 
 ---
 
-#### Grad-CAM: Final Layer with Output - Model 1 - Batch A
+#### Decision Path Visualization via Layer-wise Grad-CAM - Final Layer with Output - Model 1 - Batch A
+
+The output layer reflects final confidence — sharp, focused activations tightly match the segmentation mask. This progression offers a layerwise transparency trail, making it possible to track attention and identify misfires, biases, or inconsistencies.
 
 ![Model 1 - Grad-CAM Output Layer Output](output/layer_out_model_1_batch_a_1.png)
+
+---
+
+### XAI in Practice: Final Thoughts
+
+In high-stakes fields like medical imaging, it is not sufficient for a model to simply “perform well.” Trustworthy & Ethical AI must also be interpretable, auditable, and aligned with human expertise. That’s why explainable AI (XAI) is central to this project’s design.
+
+This system demonstrates a multi-layered approach to interpretability, combining complementary techniques that provide a clear, structured view into the model’s reasoning process:
+
+- **Saliency Overlays (logits & sigmoid):** Show raw gradient-driven focus. What features the model reacts to most and also what it disregards for its final output.
+
+- **Integrated Gradients Overlays:** Offer mathematically grounded attribution by measuring cumulative input-output relationships.
+
+- **Superpixel Confidence Overlays:** Translate prediction probabilities into region-based clarity and uncertainty, crucial for HITL triage.
+
+- **Decision Path Visualization via Layer-wise Grad-CAM:** Track the internal flow of relevance from input to output, highlighting what each architectural stage contributes.
+
+---
+
+#### Advantages Beyond "Black-Box" Models & Systems
+GlassBox XAI demonstrates how explainability can be embedded into the architecture, not just tacked on after deployment. These tools work together to provide both broad coverage and fine-grained insight to support:
+
+- **Edge Case Auditing**
+
+- **Model Debugging**
+
+- **Iterative Improvement**
+
+- **Regulatory & Compliance Readiness**
+
+- **Model Validation & Lifecycle Auditability**
+
+- **Risk-aware Deployment**
+
+- **Subject Matter Expert Collaboration**
+
+- **Stakeholder Engagement**
+ 
+- **Trust Calibration**
+
+- **Human-in-the-Loop (HITL) Systems Integration**
+
+---
+
+#### Broader Applications
+While this study focuses on lesion segmentation, the XAI methods demonstrated here generalize to any domain where decisions must be explained, verified, or defended:
+
+- **Autonomous Driving:** Interpretable object boundary detection for safer decisions.
+
+- **Industrial QA:** Explainable defect segmentation in high-throughput environments.
+
+- **Environmental Monitoring:** Attribution-aware wildfire or oil spill detection from satellite data.
+
+- **Defense & Security:** Sensible anomaly detection in high-stakes sensor feeds.
+
+In each case XAI enables confidence, calibration, and accountability for safe AI adoption.
+
+---
+
+#### Final Takeaway
+The models here do more than classify pixels. They also explains themselves, and their decisions, in detail. In safety-critical settings, that distinction matters. It’s what separates GlassBox XAI from high-performing, but opaque, black-box alternatives.
+
+XAI systems like GlassBox XAI are: 
+
+- **Transparent enough to trust.**
+
+- **Auditable enough to deploy.**
+
+- **Intelligent enough to improve.**
+
+- **Specific enough to work with experts.**
+
+This is how we move from high accuracy to high confidence and build the foundations for effective human-in-the-loop AI systems.
 
 ---
 
