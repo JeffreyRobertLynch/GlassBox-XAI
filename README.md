@@ -20,7 +20,7 @@ This work reflects a commitment to transparency, explainability, and responsible
 ---
 
 ## Problem Domain
-This project focuses on **automated binary segmentation of skin lesions** in medical images, a fundamental step toward early melanoma detection. Unlike basic classification, which simply detects the presence of a lesion, accurate segmentation outlines precise lesion boundaries. Potential applications include:
+GlassBox XAI focuses on **automated binary segmentation of skin lesions** in medical images, a fundamental step toward early melanoma detection. Unlike basic classification, which simply detects the presence of a lesion, accurate segmentation outlines precise lesion boundaries. Potential applications include:
 
 - **Risk Triage:** Flagging high-risk areas for deeper evaluation.
 
@@ -90,7 +90,7 @@ Each metric captures a different aspect of segmentation quality:
 
 ### Variant Models
 
-All three models use the **same core architecture**, but were trained and fine-tuned with **different loss functions** (Dice, Tversky, Weighted Hybrid, etc.) to optimize for distinct clinical and deployment goals:
+All three GlassBox XAI models use the **same core architecture**, but were trained and fine-tuned with **different loss functions** (Dice, Tversky, Weighted Hybrid, etc.) to optimize for distinct clinical and deployment goals:
 
 - **Model 1 – Dice-Optimized:** Prioritizes high overall segmentation accuracy and maximization of the Dice Score.
 - **Model 2 – Balance-Optimized:** Seeks an even trade-off between false positives and false negatives.
@@ -155,23 +155,36 @@ The visuals below demonstrate the core segmentation capabilities of GlassBox XAI
 
 ---
 
-#### Basic Segmentation Output - Model 1 - Batch A
+### Basic Segmentation Output
 
 This section demonstrates how raw model predictions are turned into clear visuals that support decision-making. The primary output is a binary segmentation mask, highlighting lesion regions on a per-pixel basis. Here we have the base image to be segmented, the expert annotated mask, and the models' outputted mask for comparison. 
 
 Ground truth masks, expert-annotated and included for evaluation, allow us to compare model output visually and calculate performance metrics across the batch. 
 
+---
+
+#### Basic Segmentation Output - Model 1 - Batch A
+
+---
+
 ![Model 1 - Segmentation Output Visual - Batch A](output/base_model_1_batch_a_1.png)
 
 ---
 
-#### Segmentation Overlay - Model 1 - Batch A
+### Segmentation Overlay
 
 To make predictions visually intuitive, we overlay the dimmed segmentation mask on the original image. This creates a human-readable output that can be compared directly with expert annotations. We include overlays for both the model and expert masks, along with batch-level performance metrics for context.
 
-This visual uses Batch A, representing expected mean performance. The model's segmentation boundaries align closely with the expert-annotated boundaries, aside from images 4 and 5, which are undersegmented. Image 6 is slightly oversegmented, but still shows excellent shape alignment. 
+---
+
+#### Segmentation Overlay - Model 1 - Batch A
+This visual uses Batch A, representing expected mean performance. The model's segmentation boundaries align closely with the expert-annotated boundaries, aside from images 4 and 5, which are aligned but undersegmented. Image 6 is slightly oversegmented, but still shows excellent shape alignment. 
+
+---
 
 ![Model 1 - Segmentation Overlay Metric - Batch A](output/metric_overlay_model_1_batch_a_1.png)
+
+---
 
 ![Model 1 - Segmentation Overlay Visual - Batch A](output/overlay_model_1_batch_a_1.png)
 
@@ -180,16 +193,24 @@ This visual uses Batch A, representing expected mean performance. The model's se
 #### Segmentation Overlay - Model 1 - Batch B
 This visual uses Batch B, representing optimal use case. The model's segmentation boundaries very closely mirror the expert-annotated boundaries. Only slight misalignment in images 3, 5, and 6.
 
+---
+
 ![Model 1 - Segmentation Overlay Metric - Batch B](output/metric_overlay_model_1_batch_b_1.png)
+
+---
 
 ![Model 1 - Segmentation Overlay Visual - Batch B](output/overlay_model_1_batch_b_1.png)
 
 ---
 
 #### Segmentation Overlay - Model 1 - Batch C
-This visual uses Batch C, representing edge cases and failure points. The model's segmentation boundaries align relatively closely with the expert-annotated boundaries for images 6, 7, and 8. However, the model is missing significant portions of the lesion in images 1, 2, 3, 4 and 5.
+This visual uses Batch C, representing edge cases and failure points. The model's segmentation boundaries align relatively closely with the expert-annotated boundaries for images 6, 7, and 8. However, the model is missing portions of the lesion in images 1, 2, 3, 4 and 5.
+
+---
 
 ![Model 1 - Segmentation Overlay Metric - Batch C](output/metric_overlay_model_1_batch_c_1.png)
+
+---
 
 ![Model 1 - Segmentation Overlay Visual - Batch C](output/overlay_model_1_batch_c_1.png)
 
@@ -203,25 +224,34 @@ Building trust in AI systems requires more than clean outputs; it requires **obj
 ### Variant Comparison Segmentation Overlays - All Models - Batch A
 Here we visualize the segmentation decision of all 3 variant models for comparison. For Batch A, differences are notable but not pronounced between variants. Other batches show greater divergence. 
 
+---
+
 ![Multi-Model - Variant Comparison Metrics](output/metric_multi_model_batch_a_1.png)
+
+---
 
 ![Multi-Model - Variant Comparison Visual](output/multi_model_batch_a_1.png)
 
 ---
 
 ### Model Performance Evaluation on Test Set - All Models - Test Set
-All three models achieve strong overall performance on the held-out test set. However, their error patterns differ meaningfully. The clearest differentiator is how each model balances Precision and Recall, or the rate of false positives versus false negatives at the pixel level.
+All three GlassBox XAI models achieve strong overall performance on the held-out test set. However, their error patterns differ meaningfully. The clearest differentiator is how each model balances Precision and Recall, or the rate of false positives versus false negatives at the pixel level.
 
 ---
 
 #### Model 1 - Dice-Optimized
 Precision is higher; Recall is lower.
 
+---
+
 ![Model 1 - Test Set Metrics](output/eval_model_1_1.png)
 
 ---
 
 #### Model 2 - Balance-Optimized
+
+---
+
 Precision and Recall are balanced.
 
 ![Model 2 - Test Set Metrics](output/eval_model_2_1.png)
@@ -229,7 +259,12 @@ Precision and Recall are balanced.
 ---
 
 #### Model 3 - Recall-Optimized
+
+---
+
 Precision is lower; Recall is higher.
+
+---
 
 ![Model 3 - Test Set Metrics](output/eval_model_3_1.png)
 
@@ -237,7 +272,7 @@ Precision is lower; Recall is higher.
 
 ### Confusion Matrices - All Models - Test Set
 
-Confusion matrices break down the models' correct and incorrect predictions on a per-pixel basis across the entire test set. This provides a more detailed view of where and how errors occur, especially for medical applications where every pixel may carry diagnostic weight.
+Confusion matrices break down  correct and incorrect predictions on a per-pixel basis across the entire test set. This provides a more detailed view of where and how errors occur, especially for medical applications where every pixel may carry diagnostic weight.
 
 These matrices reveal a consistent pattern across variants: as false positives increase, false negatives decrease, and vice versa. This does not indicate a drop in overall performance, each model remains highly accurate. Rather, it reflects how each was intentionally optimized for different risk profiles and deployment scenarios using custom loss functions. 
 
@@ -248,6 +283,8 @@ In medical imaging, false positives are more acceptable than false negatives if 
 #### Model 1 - Dice-Optimized
 ~2.5% of test pixels are false positives; ~4.8% are false negatives. 
 
+---
+
 ![Model 1 - Confusion Matrix](output/cm_model_1_1.png)
 
 ---
@@ -255,12 +292,16 @@ In medical imaging, false positives are more acceptable than false negatives if 
 #### Model 2 - Balance-Optimized 
 ~3.3% of test pixels are false positives; ~4.0% are false negatives.
 
+---
+
 ![Model 2 - Confusion Matrix](output/cm_model_2_1.png)
 
 ---
 
 #### Model 3 - Recall-Optimized 
 ~5.2% of test pixels are false positives; ~3.0% are false negatives. 
+
+---
 
 ![Model 3 - Confusion Matrix](output/cm_model_3_1.png)
 
@@ -697,7 +738,7 @@ This output isn't just a heatmap. It’s a transparent reasoning chain confirmin
 
 In high-stakes fields like medical imaging, it is not sufficient for a model to simply “perform well.” Trustworthy & Ethical AI must also be interpretable, auditable, and aligned with human expertise. That’s why explainable AI (XAI) is central to this project’s design.
 
-By using broad XAI tools to thoroughly evaluate Batch A, a representative batch including both optimal cases and sub-optimal cases for Model 1, we:
+After using a suite of XAI tools to thoroughly evaluate Batch A, a representative batch including both optimal cases and sub-optimal cases for Model 1, we:
 
 **- Validated** that the model's high performance metrics stem from real, interpretable decision-making, not statistical luck.
 **- Confirmed** that even in edge cases where segmentation is not precise, the model consistently detects lesions.
@@ -710,7 +751,7 @@ By using broad XAI tools to thoroughly evaluate Batch A, a representative batch 
 **- Defined** future training priorities: expand expert annotations for edge-case lesion profiles.
 **- Generated** rich, diagnostic insight for developers, evaluators, and domain experts to drive collaboration, HITL workflow integration, reglatory compliance, and iteration.
 
-This system demonstrates a multi-layered approach to interpretability, combining complementary techniques that provide a clear, structured view into the model’s reasoning process:
+GlassBox XAI demonstrates a multi-layered approach to interpretability, combining complementary techniques that provide a clear, structured view into the model’s reasoning process:
 
 - **Saliency Overlays (logits & sigmoid):** Show raw gradient-driven focus. What features the model reacts to most and also what it disregards for its final output.
 
