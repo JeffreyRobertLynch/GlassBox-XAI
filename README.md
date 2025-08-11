@@ -45,8 +45,6 @@ Transparency in model decisions is essential for the safe and ethical adoption o
 
 ## Solution Overview
 
----
-
 ### Project Goals
 
 - Build a fully custom solution for **ISIC 2018: Task 1 – Binary Segmentation** with performance that matches or exceeds top 2018 leaderboard entries.
@@ -250,17 +248,15 @@ Precision is higher; Recall is lower.
 
 #### Model 2 - Balance-Optimized
 
----
-
 Precision and Recall are balanced.
+
+---
 
 ![Model 2 - Test Set Metrics](output/eval_model_2_1.png)
 
 ---
 
 #### Model 3 - Recall-Optimized
-
----
 
 Precision is lower; Recall is higher.
 
