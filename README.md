@@ -726,7 +726,7 @@ Even in edge cases where its final decision does not exactly match the expert an
 
 To achieve more accurate segmentation for edge cases like images 4 & 5 we can compensate by using a differently specialized variant model, applying pre-processing to images prior to segmentation, or expanding training on edge case like these with focused expert annotation. 
 
-This output isn't just a heatmap. It’s a transparent reasoning chain confirming that the model is not only performant, but also interpretable, trustworthy, and ready to be evaluated for integration into real-world, expert-aligned, high-stakes workflows.
+This output isn't just a heatmap. It’s a transparent reasoning chain confirming that the model is performant, interpretable, and trustworthy. All required for integration into real-world, expert-aligned, high-stakes workflows.
 
 ---
 
@@ -739,7 +739,7 @@ After using a suite of XAI tools to thoroughly evaluate Batch A, a representativ
 **- Validated** that the model's high performance metrics stem from real, interpretable decision-making, not statistical luck.
 **- Confirmed** that even in edge cases where segmentation is not precise, the model consistently detects lesions.
 **- Observed** that the model attends to and then disregards misleading features like hairs, shadows, and moles.
-**- Correlated** salience, confidence, and prediction accuracy. The model is confident in its optimal decisions and less confident in sub-optimal decisions.
+**- Correlated** confidence and prediction accuracy. The model is confident in its optimal decisions and less confident in sub-optimal decisions.
 **- Verified** Model 1 performs exactly as designed, given its specialization (small to medium lesions).
 **- Confirmed** the architecture's modular design works: clear separation of concerns and complementary contributions.
 **- Identified** features of edge cases: large lesions with two distinct areas featuring different color and/or texture.
