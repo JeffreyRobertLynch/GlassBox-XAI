@@ -147,9 +147,9 @@ These trade-offs, and potential development paths for GlassBox XAI, are explored
 
 The visuals below demonstrate the core segmentation capabilities of GlassBox XAI. While all features support all model variants and image batches, we primarily showcase **Model 1 (Dice-Optimized)** with **Batch A (Average Performance)** for clarity, consistency, and realistic baseline performance.
 
-- **Batch A (Average Metrics):** Mirrors the models' average performance on the full test set. Represent typical, expected outcomes.
-- **Batch B (High Metrics):** Outperforms full test set metrics. Illustatrates optimal use cases.
-- **Batch C (Low Metrics):** Underperforms full test set metrics. Useful for evaluating edge cases or failure points.
+- **Batch A (Average Metrics):** Mirrors the models' average performance on the full test set. Represent typical, expected outcomes. Contains some challenging edge case images.
+- **Batch B (High Metrics):** Outperforms full test set metrics. Illustatrates optimal use cases. Contains no edge case images.
+- **Batch C (Low Metrics):** Underperforms full test set metrics. Useful for evaluating edge cases or failure points. Contains many edge case images.
 
 ---
 
