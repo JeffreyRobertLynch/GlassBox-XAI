@@ -3,7 +3,37 @@ Attention U-Net for Medical Image Segmentation with XAI Suite
 
 ---
 
-## Data Ethics & Full Disclaimer
+## Table of Contents
+1. [Data Ethics & Full Disclaimer](#1-data-ethics--full-disclaimer)  
+2. [Problem Domain](#2-problem-domain)  
+3. [Solution Overview](#3-solution-overview)  
+4. [Core Segmentation Features](#4-core-segmentation-features)  
+    4.1. [Basic Segmentation Output](#41-basic-segmentation-output)  
+    4.2. [Segmentation Overlay](#42-segmentation-overlay)  
+5. [Comparative Model Evaluation](#5-comparative-model-evaluation)  
+    5.1. [Variant Comparison Overlays – Batch A](#51-variant-comparison-overlays--batch-a)  
+    5.2. [Model Performance on Test Set](#52-model-performance-on-test-set)  
+    5.3. [Confusion Matrices – Test Set](#53-confusion-matrices--test-set)  
+6. [Interpretability & XAI](#6-interpretability--xai)  
+    6.1. [Superpixel Confidence Overlay](#61-superpixel-confidence-overlay)  
+    6.2. [Saliency Map – Raw Logits](#62-saliency-map--raw-logits)  
+    6.3. [Saliency Map – Sigmoid-Scaled](#63-saliency-map--sigmoid-scaled)  
+    6.4. [Integrated Gradients Overlay](#64-integrated-gradients-overlay)  
+    6.5. [Layer-wise Grad-CAM](#65-layer-wise-grad-cam)  
+    6.6. [Full XAI in Practice: Insights](#66-full-xai-in-practice-insights)  
+7. [Data](#7-data)  
+8. [Models & Metrics](#8-models--metrics)  
+9. [Image Processing Pipeline](#9-image-processing-pipeline)  
+10. [Key Development Milestones](#10-key-development-milestones)  
+11. [Future Work](#11-future-work)  
+12. [Tech Stack & Dependencies](#12-tech-stack--dependencies)  
+13. [Citations](#13-citations)  
+14. [Author](#14-author)  
+15. [License](#15-license)  
+
+---
+
+## 1. Data Ethics & Full Disclaimer
 
 **This project is for research and demonstration purposes only. It is not a medical device and is not intended for clinical use, diagnosis, or treatment.**
 
@@ -19,7 +49,7 @@ This work reflects a commitment to transparency, explainability, and responsible
 
 ---
 
-## Problem Domain
+## 2. Problem Domain
 GlassBox XAI focuses on **automated binary segmentation of skin lesions** in medical images, a fundamental step toward early melanoma detection. Unlike basic classification, which simply detects the presence of a lesion, accurate segmentation outlines precise lesion boundaries. Potential applications include:
 
 - **Risk Triage:** Flagging high-risk areas for deeper evaluation.
@@ -30,7 +60,7 @@ GlassBox XAI focuses on **automated binary segmentation of skin lesions** in med
 
 ---
 
-### Why Explainability (XAI) Is Critical in Healthcare AI
+### 2.1. Why Explainability (XAI) Is Critical in Healthcare AI
 Transparency in model decisions is essential for the safe and ethical adoption of AI in healthcare. XAI enables:
 
 - **Clinician Trust & Human Oversight:** Visual tools like saliency maps and Grad‑CAM help clinicians verify model reasoning at the pixel level, supporting HITL workflows and shared decision-making.
@@ -43,9 +73,9 @@ Transparency in model decisions is essential for the safe and ethical adoption o
 
 ---
 
-## Solution Overview
+## 3. Solution Overview
 
-### Project Goals
+### 3.1. Project Goals
 
 - Build a fully custom solution for **ISIC 2018: Task 1 – Binary Segmentation** with performance that matches or exceeds top 2018 leaderboard entries.
 - Adhere to ISIC 2018 challenge dataset splits (Training, Validation, Test) for quantitative benchmarking.
@@ -60,7 +90,7 @@ Transparency in model decisions is essential for the safe and ethical adoption o
 
 ---
 
-### Resources
+### 3.2. Resources
 
 - **Dataset**: Only the **ISIC 2018 Task 1 dataset** was used. This set is fully anonymized and publicly released for research. The dataset contains ~3000 dermoscopic images with corresponding ground truth segmentation masks, curated for the ISIC 2018 challenge. High-quality and widely used for benchmarking.
 - **Hardware**: Local workstation with **NVIDIA RTX 3080**, **32 GB RAM**, and **AMD 3700X CPU**. No cloud or distributed compute used.
@@ -69,7 +99,7 @@ Transparency in model decisions is essential for the safe and ethical adoption o
 
 ---
 
-### Performance Metrics
+### 3.3. Performance Metrics
 
 Model performance is measured by comparing its predicted segmentations to expert-annotated ground truth masks from the test set. These test images were **not seen during training**, so they reveal how well the model can **generalize** to new, unseen cases. This is a key indicator of real-world utility.
 
@@ -86,7 +116,7 @@ Each metric captures a different aspect of segmentation quality:
 
 ---
 
-### Variant Models
+### 3.4. Variant Models
 
 All three GlassBox XAI models use the **same core architecture**, but were trained and fine-tuned with **different loss functions** (Dice, Tversky, Weighted Hybrid, etc.) to optimize for distinct clinical and deployment goals:
 
@@ -96,7 +126,7 @@ All three GlassBox XAI models use the **same core architecture**, but were train
 
 ---
 
-### Core Segmentation Features
+### 3.5. Core Segmentation Features
 
 - **Binary Segmentation Output:** The raw model output. A binary mask showing which pixels the model identifies as lesion and which it identifies as non-lesion.
 - **Segmentation Overlay:** Predicted mask, or boundary decision, dimmed and laid over the original image for segmentation. An essential step for evaluating segmentation accuracy.  
@@ -104,7 +134,7 @@ All three GlassBox XAI models use the **same core architecture**, but were train
 
 ---
 
-### Comparative Model Evaluation Features
+### 3.6. Comparative Model Evaluation Features
 
 - **Variant Comparison Segmentation Overlays:** Side-by-side visual comparison of all three model variants using the same image input. Highlights how each model handles boundary decisions differently based on specialization.
 - **Test Set Performance Metrics:** Full evaluation across Dice, IoU, Precision, Recall, Pixel Accuracy, and F1 Score across all models.
@@ -112,7 +142,7 @@ All three GlassBox XAI models use the **same core architecture**, but were train
 
 ---
 
-### Interpretability & XAI Features
+### 3.7. Interpretability & XAI Features
 
 - **Confidence Map Overlay:** Heatmap showing model confidence in its decisions across different regions of an image. Essential context for model decision transparency.
 - **Saliency Map Overlay:** Highlights which pixels most strongly affect the model’s output, based on local sensitivity. Typically emphasizes edges or boundaries where predictions shift sharply. 
@@ -121,7 +151,7 @@ All three GlassBox XAI models use the **same core architecture**, but were train
 
 ---
 
-### Model Metrics
+### 3.8. Model Metrics
 
 | Model              | Dice     | IoU      | Precision | Recall   | Pixel Accuracy | F1 Score |
 |-------------------|----------|----------|-----------|----------|----------------|----------|
@@ -131,7 +161,7 @@ All three GlassBox XAI models use the **same core architecture**, but were train
 
 ---
 
-### Solution Summary
+### 3.9. Solution Summary
 
 GlassBox XAI achieves **Dice 0.8751** and **IoU 0.8000**, meeting or exceeding top entries from the ISIC 2018 leaderboard, **without relying on pretrained models, external data, or ensemble methods**. While some modern models (2024–2025) may report Dice scores above 0.90, these typically require computationally expensive techniques, substantial cloud infrastructure, or proprietary data pipelines.
 
@@ -143,7 +173,7 @@ These trade-offs, and potential development paths for GlassBox XAI, are explored
 
 ---
 
-## Core Segmentation Features
+## 4. Core Segmentation Features
 
 The visuals below demonstrate the core segmentation capabilities of GlassBox XAI. While all features support all model variants and image batches, we primarily showcase **Model 1 (Dice-Optimized)** with **Batch A (Average Performance)** for clarity, consistency, and realistic baseline performance.
 
@@ -153,7 +183,7 @@ The visuals below demonstrate the core segmentation capabilities of GlassBox XAI
 
 ---
 
-### Basic Segmentation Output
+### 4.1. Basic Segmentation Output
 
 This section demonstrates how raw model predictions are turned into clear visuals that support decision-making. The primary output is a binary segmentation mask, highlighting lesion regions on a per-pixel basis. Here we have the base image to be segmented, the expert annotated mask, and the models' outputted mask for comparison. 
 
@@ -169,7 +199,7 @@ Ground truth masks, expert-annotated and included for evaluation, allow us to co
 
 ---
 
-### Segmentation Overlay
+### 4.2. Segmentation Overlay
 
 To make predictions visually intuitive, we overlay the dimmed segmentation mask on the original image. This creates a human-readable output that can be compared directly with expert annotations. We include overlays for both the model and expert masks, along with batch-level performance metrics for context.
 
@@ -214,12 +244,12 @@ This visual uses Batch C, representing edge cases and failure points. The model'
 
 ---
 
-## Comparative Model Evaluation
+## 5. Comparative Model Evaluation
 Building trust in AI systems requires more than clean outputs; it requires **objective, transparent evaluation**. This section compares the performance of three models trained on the same task to show how different training strategies affect generalization, error profiles, and suitability for specific deployment needs.
 
 ---
 
-### Variant Comparison Segmentation Overlays - All Models - Batch A
+### 5.1. Variant Comparison Segmentation Overlays - All Models - Batch A
 Here we visualize the segmentation decision of all 3 variant models for comparison. For Batch A, differences are notable but not pronounced between variants. Other batches show greater divergence. 
 
 ---
@@ -232,7 +262,7 @@ Here we visualize the segmentation decision of all 3 variant models for comparis
 
 ---
 
-### Model Performance Evaluation on Test Set - All Models - Test Set
+### 5.2. Model Performance Evaluation on Test Set - All Models - Test Set
 All three GlassBox XAI models achieve strong overall performance on the held-out test set. However, their error patterns differ meaningfully. The clearest differentiator is how each model balances Precision and Recall, or the rate of false positives versus false negatives at the pixel level.
 
 ---
@@ -266,7 +296,7 @@ Precision is lower; Recall is higher.
 
 ---
 
-### Confusion Matrices - All Models - Test Set
+### 5.3. Confusion Matrices - All Models - Test Set
 
 Confusion matrices break down  correct and incorrect predictions on a per-pixel basis across the entire test set. This provides a more detailed view of where and how errors occur, especially for medical applications where every pixel may carry diagnostic weight.
 
@@ -303,7 +333,7 @@ In medical imaging, false positives are more acceptable than false negatives if 
 
 ---
 
-## Interpretability & XAI
+## 6. Interpretability & XAI
 Understanding how and why a model makes its predictions is essential for trust, regulatory compliance, clinical safety, and real-world deployment.
 
 This section introduces a suite of interpretability tools designed to help researchers, clinicians, and auditors explain, interrogate, and validate model behavior beyond raw performance metrics. These include:
@@ -336,7 +366,7 @@ We will continue using Batch A, the average performance set of images, an an exa
 
 ---
 
-### Superpixel Confidence Overlay
+### 6.1. Superpixel Confidence Overlay
 This visualization shows the model’s segmentation prediction overlaid with a heatmap of per-pixel confidence, grouped into superpixels (clusters of visually similar pixels). Each region is color-coded based on how confidently the model believes it is part of the lesion (positive class). This breaks a segmentation decision into parts, showing where the model has high confidence and where the model has low confidence.
 
 ---
@@ -391,7 +421,7 @@ This system is for research and educational use only. Visuals and insights are b
 
 ---
 
-### Saliency Map Overlay - Raw Logits
+### 6.2. Saliency Map Overlay - Raw Logits
 
 This visualization highlights where the model is most sensitive to small changes in the input image. Each pixel is color-coded based on the gradient magnitude flowing from the raw logits (pre-sigmoid output) with respect to the input. The result is a high-resolution "sensitivity heatmap" showing all areas the model reacts to whether helpful, distracting, or irrelevant. For example, we notice that non-lesion objects, like hairs, are consistently hot pixels here but these do not affect or confuse the model's final output. We will see why this is further down the XAI pipeline.
 
@@ -444,7 +474,7 @@ For research and educational use only. Visuals and insights are based on the ISI
 
 ---
 
-### Saliency Map Overlay - Sigmoid-Scaled
+### 6.3. Saliency Map Overlay - Sigmoid-Scaled
 
 ---
 
@@ -505,7 +535,7 @@ For research and educational use only. Visuals and insights are based on the ISI
 
 ---
 
-### Integrated Gradients Overlay
+### 6.4. Integrated Gradients Overlay
 
 This visualization highlights the cumulative influence of each pixel on the model’s final segmentation decision, computed by tracing a path from a baseline (blank) image to the actual input. The result is a smoother, more stable attribution map compared to instantaneous saliency techniques. Integrated Gradients don’t just show what the model is sensitive to. They reveal which input features actually caused the prediction, traced along a path from blank input to final decision. Integrated gradients, alongside raw and sigmoid saliency, distinguish between what the model reacts to, what it acts on, and what it ultimately bases its decision on.
 
@@ -557,7 +587,7 @@ This visualization is for research and educational purposes only. Visuals and in
 
 ---
 
-### Decision Path Visualization via Layer-wise Grad-CAM
+### 6.5. Decision Path Visualization via Layer-wise Grad-CAM
 This visualization illustrates how different parts of an image influence the model’s segmentation decision across its entire architecture. We follow a batch of images from input to final output. At each major stage (encoder, attention bottleneck, decoder, output), we apply Grad-CAM to highlight spatial regions that most strongly affect the model's prediction.
 
 These heatmaps reflect class-specific activation relevance, revealing how the model’s internal focus evolves layer by layer and solidifies into a segmentation decision.
@@ -730,7 +760,7 @@ This output isn't just a heatmap. It’s a transparent reasoning chain confirmin
 
 ---
 
-### Full XAI in Practice: Insights
+### 6.6. Full XAI in Practice: Insights
 
 In high-stakes fields like medical imaging, it is not sufficient for a model to simply “perform well.” Trustworthy & Ethical AI must also be interpretable, auditable, and aligned with human expertise. That’s why explainable AI (XAI) is central to this project’s design.
 
@@ -816,7 +846,7 @@ This is how we move from high accuracy to high confidence and build the foundati
 
 ---
 
-## Data
+## 7. Data
 This project uses the publicly available, anonymized dataset from ISIC 2018: Task 1 - Binary Segmentation, a globally recognized benchmark for skin lesion segmentation. See "Citations" section for direct links to the International Skin Image Collaboration (ISIC) website. 
 
 - **High-Quality Curation:** The dataset was contributed by a consortium of international dermatology clinics and academic institutions. Images were collected under expert supervision, making it a clinically relevant and representative dataset.
@@ -833,7 +863,7 @@ This project uses the publicly available, anonymized dataset from ISIC 2018: Tas
 
 ---
 
-## Models & Metrics
+## 8. Models & Metrics
 
 ---
 
@@ -877,7 +907,7 @@ This model prioritizes minimizing false negatives to maximize sensitivity. It is
 
 ---
 
-## Image Processing Pipeline
+## 9. Image Processing Pipeline
 A pre-processing and augmentation pipeline was developed to support both training-time and test-time experimentation. This enabled flexible trials of various techniques to enhance robustness, generalization, and fairness. 
 
 While final reported metrics are based solely on the unaltered test set (to preserve benchmark integrity), various pre-processing techniques were tested to evaluate their effect on generalization and robustness.
@@ -917,7 +947,7 @@ The final pipeline design prioritized reproducibility, modularity, and realism t
 
 ---
 
-## Key Development Milestones
+## 10. Key Development Milestones
 These milestones reflect not only technical development but iterative experimentation, systematic validation, and a focus on real-world explainability.
 
 ---
@@ -1004,7 +1034,7 @@ These milestones reflect not only technical development but iterative experiment
 
 ---
 
-## Future Work
+## 11. Future Work
 
 GlassBox XAI has several avenues for improving model performance with tradeoffs in interpretability, development time, on-device feasibility, and computational cost. 
 
@@ -1046,7 +1076,7 @@ Using pretrained encoders or models may accelerate convergence and improve perfo
 
 ---
 
-## Tech Stack & Dependencies
+## 12. Tech Stack & Dependencies
 
 This project was developed and executed in Jupyter Notebook using the following tools and libraries:
 
@@ -1064,7 +1094,7 @@ This project was developed and executed in Jupyter Notebook using the following 
 
 ---
 
-## Citations
+## 13. Citations
 This project uses data from the ISIC 2018: Task 1 – Lesion Segmentation challenge. All images and masks are publicly available, de-identified, and used here under the ISIC data use policy for research and educational purposes.
 
 ---
@@ -1109,11 +1139,11 @@ https://arxiv.org/abs/1706.05721
 
 ---
 
-## Author
+## 14. Author
 **Jeffrey Robert Lynch** [LinkedIn](https://www.linkedin.com/in/jeffrey-lynch-350930348)
 
 ---
 
-## License
+## 15. License
 
 This project is for educational and demonstration purposes only. For commercial use, please contact the author.
