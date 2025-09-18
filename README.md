@@ -1,4 +1,4 @@
-# GlassBox-XAI
+# GlassBox XAI
 **GlassBox** is an AI system designed to help clinicians analyze medical images with **greater accuracy and transparency**. By combining **advanced deep learning** with **explainable AI (XAI) techniques**, it highlights critical features in scans and clearly explains its decisions so healthcare professionals can trust and interpret results. This supports **more accurate diagnoses**, enhances **patient safety**, and complies with stringent **healthcare regulations**. 
 
 At its core, GlassBox uses an **Attention U-Net** architecture tailored for medical image segmentation, alongside a **comprehensive explainability suite** including **Grad-CAM**, **saliency maps**, **confidence overlays**, **integrated gradients**, and **layer-wise visualizations**. Inference is **visibly built incrementally in real time**, enabling effective **human-in-the-loop (HITL)** interaction that ensures decisions remain **auditable** and **clinically aligned**.
@@ -104,7 +104,7 @@ If you’d prefer to skip the **Problem Domain** and **Solution Overview** and *
 ---
 
 ## 2. Problem Domain
-GlassBox XAI focuses on **automated binary segmentation of skin lesions** in medical images, a fundamental step toward early melanoma detection. Unlike basic classification, which simply detects the presence of a lesion, accurate segmentation outlines precise lesion boundaries. Potential applications include:
+GlassBox focuses on **automated binary segmentation of skin lesions** in medical images, a fundamental step toward early melanoma detection. Unlike basic classification, which simply detects the presence of a lesion, accurate segmentation outlines precise lesion boundaries. Potential applications include:
 
 - **Risk Triage:** Flagging high-risk areas for deeper evaluation.
 
@@ -172,7 +172,7 @@ Each metric captures a different aspect of segmentation quality:
 
 ### 3.4. Variant Models
 
-All three GlassBox XAI models use the **same core architecture**, but were trained and fine-tuned with **different loss functions** (Dice, Tversky, Weighted Hybrid, etc.) to optimize for distinct clinical and deployment goals:
+All three GlassBox models use the **same core architecture**, but were trained and fine-tuned with **different loss functions** (Dice, Tversky, Weighted Hybrid, etc.) to optimize for distinct clinical and deployment goals:
 
 - **Model 1 – Dice-Optimized:** Prioritizes high overall segmentation accuracy and maximization of the Dice Score.
 - **Model 2 – Balance-Optimized:** Seeks an even trade-off between false positives and false negatives.
@@ -217,19 +217,19 @@ All three GlassBox XAI models use the **same core architecture**, but were train
 
 ### 3.9. Solution Summary
 
-GlassBox XAI achieves **Dice 0.8751** and **IoU 0.8000**, meeting or exceeding top entries from the ISIC 2018 leaderboard, **without relying on pretrained models, external data, or ensemble methods**. While some modern models (2024–2025) may report Dice scores above 0.90, these typically require computationally expensive techniques, substantial cloud infrastructure, or proprietary data pipelines.
+GlassBox achieves **Dice 0.8751** and **IoU 0.8000**, meeting or exceeding top entries from the ISIC 2018 leaderboard, **without relying on pretrained models, external data, or ensemble methods**. While some modern models (2024–2025) may report Dice scores above 0.90, these typically require computationally expensive techniques, substantial cloud infrastructure, or proprietary data pipelines.
 
 By contrast, GlassBox was developed **entirely from scratch**, trained on limited data, and runs **securely on local hardware** with **end-to-end auditability**. It is suitable for real-world clinical deployment where **privacy, traceability, and model ownership** are critical design factors.
 
 In short, this system delivers **high-tier performance under realistic clinical constraints**, while also offering **powerful visual diagnostics**, **exceptional model transparency**, and **flexibile, local deployability** not often found in more opaque, compute-heavy solutions.
 
-These trade-offs, and potential development paths for GlassBox XAI, are explored more thoroughly in the **Future Work** section.
+These trade-offs, and potential development paths for GlassBox, are explored more thoroughly in the **Future Work** section.
 
 ---
 
 ## 4. Core Segmentation Features
 
-The visuals below demonstrate the core segmentation capabilities of GlassBox XAI. While all features support all model variants and image batches, we primarily showcase **Model 1 (Dice-Optimized)** with **Batch A (Average Performance)** for clarity, consistency, and realistic baseline performance.
+The visuals below demonstrate the core segmentation capabilities of GlassBox. While all features support all model variants and image batches, we primarily showcase **Model 1 (Dice-Optimized)** with **Batch A (Average Performance)** for clarity, consistency, and realistic baseline performance.
 
 - **Batch A (Average Metrics):** Mirrors the models' average performance on the full test set. Represent typical, expected outcomes. Contains some challenging edge case images.
 - **Batch B (High Metrics):** Outperforms full test set metrics. Illustatrates optimal use cases. Contains no edge case images.
@@ -317,7 +317,7 @@ Here we visualize the segmentation decision of all 3 variant models for comparis
 ---
 
 ### 5.2. Model Performance Evaluation on Test Set - All Models - Test Set
-All three GlassBox XAI models achieve strong overall performance on the held-out test set. However, their error patterns differ meaningfully. The clearest differentiator is how each model balances Precision and Recall, or the rate of false positives versus false negatives at the pixel level.
+All three GlassBox models achieve strong overall performance on the held-out test set. However, their error patterns differ meaningfully. The clearest differentiator is how each model balances Precision and Recall, or the rate of false positives versus false negatives at the pixel level.
 
 ---
 
@@ -674,7 +674,7 @@ Grad-CAM (Gradient-weighted Class Activation Mapping) is a visualization techniq
 
 Grad-CAM is most commonly applied to image classification models, where it reveals which image regions contributed most to a predicted class (e.g., Dog vs. Cat). In such models, a single label is predicted for the entire image, and the Grad-CAM heatmap explains the basis for that classification.
 
-In contrast, GlassBox XAI is a segmentation model, where classification is performed at the pixel level to distinguish lesion from non-lesion regions. While the prediction output is spatial (a mask), each pixel still represents a classification and Grad-CAM can be extended to this context.
+In contrast, GlassBox is a segmentation model, where classification is performed at the pixel level to distinguish lesion from non-lesion regions. While the prediction output is spatial (a mask), each pixel still represents a classification and Grad-CAM can be extended to this context.
 
 In this implementation, Grad-CAM is applied at four major layer groups: Encoder, Attention Bottleneck, Decoder, and Output Layer. This layer-wise view tracks how the model's spatial focus evolves across the entire architecture. It allows us to visualize how low-level features are detected, how attention is modulated, and how these features are reassembled into a final segmentation decision.
 
@@ -831,7 +831,7 @@ After using a suite of XAI tools to thoroughly evaluate Batch A, a representativ
 **- Defined** future training priorities: expand expert annotations for edge-case lesion profiles.
 **- Generated** rich, diagnostic insight for developers, evaluators, and domain experts to drive collaboration, HITL workflow integration, reglatory compliance, and iteration.
 
-GlassBox XAI demonstrates a multi-layered approach to interpretability, combining complementary techniques that provide a clear, structured view into the model’s reasoning process:
+GlassBox demonstrates a multi-layered approach to interpretability, combining complementary techniques that provide a clear, structured view into the model’s reasoning process:
 
 - **Saliency Overlays (logits & sigmoid):** Show raw gradient-driven focus. What features the model reacts to most and also what it disregards for its final output.
 
@@ -844,7 +844,7 @@ GlassBox XAI demonstrates a multi-layered approach to interpretability, combinin
 ---
 
 #### Advantages Beyond "Black-Box" Models & Systems
-GlassBox XAI demonstrates how explainability can be embedded into the architecture, not just tacked on after deployment. These tools work together to provide both broad coverage and fine-grained insight to support:
+GlassBox demonstrates how explainability can be embedded into the architecture, not just tacked on after deployment. These tools work together to provide both broad coverage and fine-grained insight to support:
 
 - **Edge Case Auditing**
 
@@ -884,9 +884,9 @@ In each case XAI enables confidence, calibration, and accountability for safe AI
 ---
 
 #### Final Takeaway
-The models here do more than classify pixels. They also explains themselves, and their decisions, in detail. In safety-critical settings, that distinction matters. It’s what separates GlassBox XAI from high-performing, but opaque, black-box alternatives.
+The models here do more than classify pixels. They also explains themselves, and their decisions, in detail. In safety-critical settings, that distinction matters. It’s what separates GlassBox from high-performing, but opaque, black-box alternatives.
 
-XAI systems like GlassBox XAI are: 
+XAI systems like GlassBox are: 
 
 - **Transparent enough to trust.**
 
@@ -922,7 +922,7 @@ This project uses the publicly available, anonymized dataset from ISIC 2018: Tas
 ---
 
 ### Architecture
-GlassBox XAI uses a custom-built deep learning model based on U-Net, a specialized neural network architecture designed for precise image segmentation. Unlike conventional convolutional networks designed for image classification, U-Net is shaped like a “U” and learns to both understand the big picture and recover fine details. It is well-suited for pixel-wise delineation of lesion boundaries. 
+GlassBox uses a custom-built deep learning model based on U-Net, a specialized neural network architecture designed for precise image segmentation. Unlike conventional convolutional networks designed for image classification, U-Net is shaped like a “U” and learns to both understand the big picture and recover fine details. It is well-suited for pixel-wise delineation of lesion boundaries. 
 
 To further improve accuracy, especially in challenging or noisy images, **attention mechanisms** were added. These help the model focus on the most relevant regions in the image, such as lesion edges, while ignoring background distractions like hair or shadows.
 
@@ -1090,18 +1090,18 @@ These milestones reflect not only technical development but iterative experiment
 
 ## 11. Future Work
 
-GlassBox XAI has several avenues for improving model performance with tradeoffs in interpretability, development time, on-device feasibility, and computational cost. 
+GlassBox has several avenues for improving model performance with tradeoffs in interpretability, development time, on-device feasibility, and computational cost. 
 
 ---
 
 ### Subject Matter Expert Collaboration
-For GlassBox XAI to transition from proof-of-concept to clinical utility, collaboration with dermatology experts is essential.
+For GlassBox to transition from proof-of-concept to clinical utility, collaboration with dermatology experts is essential.
 
 - **Clinical Workflow Integration**
 Partnering with dermatologists and clinical advisors can help validate real-world use cases, assess model performance in clinical settings, and identify opportunities for workflow integration and decision support.
 
 - **UI/UX Development**
-Building user interfaces tailored to clinical or educational use could improve usability for XAI visualizations. Integrating GlassBox XAI with clinical tools and EHR systems could further enhance its utility in real-world workflows.
+Building user interfaces tailored to clinical or educational use could improve usability for XAI visualizations. Integrating GlassBox with clinical tools and EHR systems could further enhance its utility in real-world workflows.
 
 - **Expanded XAI & Human-in-the-Loop (HITL) Tools**
 Designing tools that allow experts to explore model reasoning, suggest corrections, and highlight edge cases could improve trust, enable targeted retraining, and accelerate model refinement through human-in-the-loop feedback.
@@ -1120,7 +1120,7 @@ More advanced or domain-specific augmentation strategies could improve generaliz
 Incorporating more expert-annotated images from trusted sources (e.g., HAM10000) could improve model performance and reduce bias. This would be the most efficient way to improve metrics, and would have been prioritized in this iteration, but we constrained ourselves to using only the unaltered ISIC 2018 dataset for training.
 
 - **Ensemble Models**
-Combining the strengths of multiple models via ensembling or model averaging could improve overall performance, but increases inference time and complexity. While ensembling the three variant models in GlassBox XAI is technically possible, their shared architecture limits the diversity of learned representations, likely resulting in minimal gains. Greater benefits would be expected from ensembling architecturally diverse models.
+Combining the strengths of multiple models via ensembling or model averaging could improve overall performance, but increases inference time and complexity. While ensembling the three variant models in GlassBox is technically possible, their shared architecture limits the diversity of learned representations, likely resulting in minimal gains. Greater benefits would be expected from ensembling architecturally diverse models.
 
 - **Vision Transformers**
 Transformer-based architectures have shown state-of-the-art performance in medical imaging tasks. Exploring these could improve segmentation performance. However, they generally require large-scale training data to outperform CNN-based models.
