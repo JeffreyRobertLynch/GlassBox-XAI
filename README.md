@@ -9,6 +9,54 @@ Because the pipelines are structured for **plug-and-play reusability**, model re
 
 ---
 
+## Ethics & Disclaimer (Click to Expand)
+
+<details>
+<summary><strong>This project is for research and demonstration purposes only.</strong></summary>
+
+<br>
+
+**This project is for research and demonstration purposes only. It is not a medical device and is not intended for clinical use, diagnosis, or treatment.**
+
+**All medical images shown are sourced from the ISIC 2018 Challenge Dataset. A publicly released, fully anonymized dataset curated for non-commercial research. No private health information (PHI) is included.**
+
+**All results and visual outputs are generated deep learning models and evaluated using the official ISIC 2018 test set for accuracy metrics. This work has not been validated in clinical settings.**
+
+**No claims are made regarding diagnostic accuracy, safety, or fitness for medical decision-making.**
+
+**Visualizations (e.g., segmentation masks, XAI overlays, etc.) are interpretability tools designed to support human understanding of model behavior. They are not clinical indicators.**
+
+> This work reflects a commitment to transparency, explainability, and responsible AI development in medical imaging and general XAI research. Please refer to the [ISIC 2018 dataset license and terms of use](https://challenge2018.isic-archive.com/) for attribution and usage guidelines.
+
+</details>
+
+---
+
+## Want to see the system in action?
+
+For medical image segmentation, **seeing is believing**. A picture is worth a thousand words, and GlassBox includes **dozens of annotated system outputs**, along with interpretability overlays, explanations, and performance metrics.
+
+If you’d prefer to skip the Problem Domain and Solution Overview and **jump directly to the visual demo**, use the links below:
+
+- [Core Segmentation Features](#4-core-segmentation-features)  
+    - [Basic Segmentation Output](#41-basic-segmentation-output)  
+    - [Segmentation Overlay](#42-segmentation-overlay)  
+- [Comparative Model Evaluation](#5-comparative-model-evaluation)  
+    - [Variant Comparison Overlays – Batch A](#51-variant-comparison-overlays--batch-a)  
+    - [Model Performance on Test Set](#52-model-performance-on-test-set)  
+    - [Confusion Matrices – Test Set](#53-confusion-matrices--test-set)  
+- [Interpretability & XAI](#6-interpretability--xai)  
+    - [Superpixel Confidence Overlay](#61-superpixel-confidence-overlay)  
+    - [Saliency Map – Raw Logits](#62-saliency-map--raw-logits)  
+    - [Saliency Map – Sigmoid-Scaled](#63-saliency-map--sigmoid-scaled)  
+    - [Integrated Gradients Overlay](#64-integrated-gradients-overlay)  
+    - [Layer-wise Grad-CAM](#65-layer-wise-grad-cam)  
+    - [Full XAI in Practice: Insights](#66-full-xai-in-practice-insights)  
+
+> Or continue reading for the full context and design rationale behind the system.
+
+---
+
 ## Table of Contents
 1. [Data Ethics & Full Disclaimer](#1-data-ethics--full-disclaimer)  
 2. [Problem Domain](#2-problem-domain)  
@@ -51,7 +99,7 @@ Because the pipelines are structured for **plug-and-play reusability**, model re
 
 **Visualizations (e.g., segmentation masks, XAI overlays, etc.) are interpretability tools designed to support human understanding of model behavior. They are not clinical indicators.**
 
-This work reflects a commitment to transparency, explainability, and responsible AI development in medical imaging and general XAI research. Please refer to the [ISIC 2018 dataset license and terms of use](https://challenge2018.isic-archive.com/) for attribution and usage guidelines.
+> This work reflects a commitment to transparency, explainability, and responsible AI development in medical imaging and general XAI research. Please refer to the [ISIC 2018 dataset license and terms of use](https://challenge2018.isic-archive.com/) for attribution and usage guidelines.
 
 ---
 
