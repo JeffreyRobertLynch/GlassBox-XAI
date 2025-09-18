@@ -36,7 +36,7 @@ Because the pipelines are structured for **plug-and-play reusability**, model re
 
 For medical image segmentation, **seeing is believing**. A picture is worth a thousand words, and GlassBox includes **dozens of annotated system outputs**, along with interpretability overlays, explanations, and performance metrics.
 
-If you’d prefer to skip the Problem Domain and Solution Overview and **jump directly to the visual demo**, use the links below:
+If you’d prefer to skip the **Problem Domain** and **Solution Overview** and **jump directly to the visual demo**, use the links below:
 
 - [Core Segmentation Features](#4-core-segmentation-features)  
     - [Basic Segmentation Output](#41-basic-segmentation-output)  
