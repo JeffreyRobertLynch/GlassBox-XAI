@@ -1,5 +1,7 @@
 # GlassBox-XAI
-Attention U-Net for Medical Image Segmentation with XAI Suite  
+GlassBox is an AI system designed to help clinicians analyze medical images with greater accuracy and transparency. By combining advanced deep learning with explainable AI techniques, it highlights critical features in scans and clearly explains its decisions so healthcare professionals can trust and interpret results. This supports more accurate diagnoses, enhances patient safety, and complies with stringent healthcare regulations. 
+
+At its core, GlassBox uses an Attention U-Net architecture tailored for medical image segmentation, alongside a comprehensive explainability suite including Grad-CAM, saliency maps, confidence overlays, integrated gradients, and layer-wise visualizations. Inference is visibly built incrementally in real time, enabling effective human-in-the-loop interaction that ensures decisions remain auditable and clinically aligned.
 
 ---
 
