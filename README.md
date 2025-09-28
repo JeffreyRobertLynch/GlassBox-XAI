@@ -6,9 +6,11 @@ A solo-built, end-to-end system for interpretable, infrastructure-light medical 
 
 ## Disclaimer
 
+This project is a research-oriented prototype for educational and exploratory purposes only. It is **not a certified medical device**, and I am **not a licensed medical professional**. No part of this work should be used for clinical decision-making without expert validation and regulatory approval.
+
 ---
 
-## Architecture & Training
+## Model Architecture, Training, and System Information
 
 - **Custom architecture**: U-Net with attention bottleneck  
 - **Dataset**: ISIC 2018 – Task 1: Lesion Segmentation  
@@ -120,4 +122,10 @@ System structure, transparency methods, and audit frameworks generalize to:
 
 ---
 
-### Contact
+### Connect & Contact
+
+Available for live walkthroughs, Q&A, and technical deep dives on this project.
+
+**Jeffrey Robert Lynch** [LinkedIn](https://www.linkedin.com/in/jeffrey-lynch-350930348)
+
+(Demo access, source code discussions, and use-case exploration available upon request.)
