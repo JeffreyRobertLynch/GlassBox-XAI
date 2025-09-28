@@ -120,9 +120,4 @@ System structure, transparency methods, and audit frameworks generalize to:
 
 ---
 
-### [View Full Repository →](#link-to-your-repo)
-
-Includes full model code, detailed metrics, visual walkthroughs, and annotated notebooks.
-
-
-This project is for educational and demonstration purposes only. For commercial use, please contact the author.
+### Contact
