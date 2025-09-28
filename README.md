@@ -59,7 +59,7 @@ Trained and evaluated three model variants with same architecture but different 
 
 ## Explainability (XAI)
 
-Integrated multiple interpretability techniques to support expert review and regulatory workflows. Outputs generated at inference time for each test image.
+Integrated multiple interpretability techniques to support review, regulatory compliance, and clinical workflows. Outputs generated at inference time.
 
 - Layerwise Grad-CAM (decoder layers shown)  
 - Integrated Gradients  
