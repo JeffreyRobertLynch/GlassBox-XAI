@@ -216,11 +216,11 @@ This visual uses Batch A, representing expected mean performance. The model's se
 
 ---
 
-![Model 1 - Segmentation Overlay Metric - Batch A](output/metric_overlay_model_1_batch_a_1.png)
+![Model 1 - Segmentation Overlay Metric - Batch A](../output/metric_overlay_model_1_batch_a_1.png)
 
 ---
 
-![Model 1 - Segmentation Overlay Visual - Batch A](output/overlay_model_1_batch_a_1.png)
+![Model 1 - Segmentation Overlay Visual - Batch A](../output/overlay_model_1_batch_a_1.png)
 
 ---
 
@@ -229,11 +229,11 @@ This visual uses Batch B, representing optimal use case. The model's segmentatio
 
 ---
 
-![Model 1 - Segmentation Overlay Metric - Batch B](output/metric_overlay_model_1_batch_b_1.png)
+![Model 1 - Segmentation Overlay Metric - Batch B](../output/metric_overlay_model_1_batch_b_1.png)
 
 ---
 
-![Model 1 - Segmentation Overlay Visual - Batch B](output/overlay_model_1_batch_b_1.png)
+![Model 1 - Segmentation Overlay Visual - Batch B](../output/overlay_model_1_batch_b_1.png)
 
 ---
 
@@ -242,11 +242,11 @@ This visual uses Batch C, representing edge cases and failure points. The model'
 
 ---
 
-![Model 1 - Segmentation Overlay Metric - Batch C](output/metric_overlay_model_1_batch_c_1.png)
+![Model 1 - Segmentation Overlay Metric - Batch C](../output/metric_overlay_model_1_batch_c_1.png)
 
 ---
 
-![Model 1 - Segmentation Overlay Visual - Batch C](output/overlay_model_1_batch_c_1.png)
+![Model 1 - Segmentation Overlay Visual - Batch C](../output/overlay_model_1_batch_c_1.png)
 
 ---
 
@@ -260,11 +260,11 @@ Here we visualize the segmentation decision of all 3 variant models for comparis
 
 ---
 
-![Multi-Model - Variant Comparison Metrics](output/metric_multi_model_batch_a_1.png)
+![Multi-Model - Variant Comparison Metrics](../output/metric_multi_model_batch_a_1.png)
 
 ---
 
-![Multi-Model - Variant Comparison Visual](output/multi_model_batch_a_1.png)
+![Multi-Model - Variant Comparison Visual](../output/multi_model_batch_a_1.png)
 
 ---
 
@@ -278,7 +278,7 @@ Precision is higher; Recall is lower.
 
 ---
 
-![Model 1 - Test Set Metrics](output/eval_model_1_1.png)
+![Model 1 - Test Set Metrics](../output/eval_model_1_1.png)
 
 ---
 
@@ -288,7 +288,7 @@ Precision and Recall are balanced.
 
 ---
 
-![Model 2 - Test Set Metrics](output/eval_model_2_1.png)
+![Model 2 - Test Set Metrics](../output/eval_model_2_1.png)
 
 ---
 
@@ -298,7 +298,7 @@ Precision is lower; Recall is higher.
 
 ---
 
-![Model 3 - Test Set Metrics](output/eval_model_3_1.png)
+![Model 3 - Test Set Metrics](../output/eval_model_3_1.png)
 
 ---
 
@@ -317,7 +317,7 @@ In medical imaging, false positives are more acceptable than false negatives if 
 
 ---
 
-![Model 1 - Confusion Matrix](output/cm_model_1_1.png)
+![Model 1 - Confusion Matrix](../output/cm_model_1_1.png)
 
 ---
 
@@ -326,7 +326,7 @@ In medical imaging, false positives are more acceptable than false negatives if 
 
 ---
 
-![Model 2 - Confusion Matrix](output/cm_model_2_1.png)
+![Model 2 - Confusion Matrix](../output/cm_model_2_1.png)
 
 ---
 
@@ -335,7 +335,7 @@ In medical imaging, false positives are more acceptable than false negatives if 
 
 ---
 
-![Model 3 - Confusion Matrix](output/cm_model_3_1.png)
+![Model 3 - Confusion Matrix](../output/cm_model_3_1.png)
 
 ---
 
@@ -398,7 +398,7 @@ This visualization shows the model’s segmentation prediction overlaid with a h
 
 #### Superpixel Confidence Overlay - Batch A
 
-![Model 1 - Confidence Map Output](output/conf_map_model_1_batch_a_1.png)
+![Model 1 - Confidence Map Output](../output/conf_map_model_1_batch_a_1.png)
 
 ---
 
@@ -453,7 +453,7 @@ This visualization highlights where the model is most sensitive to small changes
 
 #### Saliency Map Overlay - Raw Logits - Model 1 - Batch A
 
-![Model 1 - Saliency Map Logits Output](output/sal_map_model_1_batch_a_1_raw.png)
+![Model 1 - Saliency Map Logits Output](../output/sal_map_model_1_batch_a_1_raw.png)
 
 ---
 
@@ -506,7 +506,7 @@ This visualization is much less noisy than the previous saliency map because the
 
 #### Saliency Map Overlay - Sigmoid-Scaled - Model 1 - Batch A
 
-![Model 1 - Saliency Map Sigmoid Output](output/sal_map_model_1_batch_a_1.png)
+![Model 1 - Saliency Map Sigmoid Output](../output/sal_map_model_1_batch_a_1.png)
 
 ---
 
@@ -565,7 +565,7 @@ This visualization highlights the cumulative influence of each pixel on the mode
 
 #### Integrated Gradients Overlay - Model 1 - Batch A
 
-![Model 1 - Integrated Gradients Output](output/int_grad_model_1_batch_a_1.png)
+![Model 1 - Integrated Gradients Output](../output/int_grad_model_1_batch_a_1.png)
 
 ---
 
@@ -660,7 +660,7 @@ Early encoder layers should focus on low-level visual cues while deeper encoder 
 
 ---
 
-![Model 1 - Grad-CAM Encoder Layer Output](output/layer_enc_model_1_batch_a_1.png)
+![Model 1 - Grad-CAM Encoder Layer Output](../output/layer_enc_model_1_batch_a_1.png)
 
 ---
 
@@ -681,7 +681,7 @@ This visualization highlights activations through the point of maximum compressi
 
 Activations should be tighter and more class-specific than the encoder. Attention gating should emphasize lesion areas while downplaying background. Ideally, this will correct cases where the encoder under or over attended to features before they are passed to the decoder layers for reconstruction.
 
-![Model 1 - Grad-CAM Attention Layer Output](output/layer_att_model_1_batch_a_1.png)
+![Model 1 - Grad-CAM Attention Layer Output](../output/layer_att_model_1_batch_a_1.png)
 
 ---
 
@@ -707,7 +707,7 @@ The decoder’s job is to reconstruct the segmentation mask in high resolution. 
 
 This is where we expect the clearest signs that attention worked. If attention succeeded in isolating lesion-relevant features, the decoder should now reassemble them into a precise and well-aligned segmentation boundary. We should see gradually increasing clarity as we move from early layers to later layers. Spatial features should become more detailed and refined with activation maps eventually aligning with the final segmentation shape.
 
-![Model 1 - Grad-CAM Decoder Layer Output](output/layer_dec_model_1_batch_a_1.png)
+![Model 1 - Grad-CAM Decoder Layer Output](../output/layer_dec_model_1_batch_a_1.png)
 
 ---
 
@@ -733,7 +733,7 @@ In this final stage, we examine the Grad-CAM heatmaps for the output layer, whic
 
 This is the culmination of the encoder’s feature extraction, the attention bottleneck’s filtering, and the decoder’s reconstruction. The output layer should reflect the model’s final decision exactly. 
 
-![Model 1 - Grad-CAM Output Layer Output](output/layer_out_model_1_batch_a_1.png)
+![Model 1 - Grad-CAM Output Layer Output](../output/layer_out_model_1_batch_a_1.png)
 
 ---
 
