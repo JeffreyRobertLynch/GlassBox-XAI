@@ -27,13 +27,15 @@ A solo-built, end-to-end system for interpretable, infrastructure-light medical 
 
 ---
 
-## Pixel-Level Error Tradeoffs by Model
+## Pixel-Level Error
+
+**False positive (FP) and false negative (FN) rates are derived from confusion matrices and represent the percentage of total test set pixels. These values align with reported pixel accuracy.**
 
 | Model                     | False Positives (%) | False Negatives (%) |
 |---------------------------|---------------------|----------------------|
-| Dice-Optimized            | ~2.5%               | ~4.8%                |
-| Balance-Optimized         | ~3.3%               | ~4.0%                |
-| Recall-Optimized          | ~5.2%               | ~3.0%                |
+| **Dice-Optimized**            | ~2.5%               | ~4.8%                |
+| **Balance-Optimized**         | ~3.3%               | ~4.0%                |
+| **Recall-Optimized**          | ~5.2%               | ~3.0%                |
 
 ---
 
