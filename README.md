@@ -43,7 +43,7 @@ A solo-built, end-to-end system for interpretable, infrastructure-light medical 
 
 Trained and evaluated three model variants with same architecture but different loss functions. Outputs compared over shared test batch.
 
-**Note** A single batch featuring mean performance is displayed across all visuals for transparency. Matches closely to Dice-Optimized (Model 1) average performance on full 1000 image test set. Best case and worst case included in deep dive. 
+**Note**: A single batch featuring mean performance is displayed across all visuals for transparency. Matches closely to Dice-Optimized (Model 1) average performance on full 1000 image test set. Best case and worst case included in deep dive. 
 
 <details>
 <summary>View Comparative Model Outputs</summary>
