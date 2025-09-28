@@ -65,7 +65,7 @@ Integrated multiple interpretability techniques to support review, regulatory co
 
 - Layerwise Grad-CAM (decoder layers shown)  
 - Integrated Gradients  
-- Saliency Maps (logits & sigmoid-scaled)  
+- Saliency Map
 - Pixel Confidence Overlays  
 
 <details>
