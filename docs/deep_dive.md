@@ -201,7 +201,7 @@ Ground truth masks, expert-annotated and included for evaluation, allow us to co
 
 ---
 
-![Model 1 - Segmentation Output Visual - Batch A](output/base_model_1_batch_a_1.png)
+![Model 1 - Segmentation Output Visual - Batch A](../output/base_model_1_batch_a_1.png)
 
 ---
 
