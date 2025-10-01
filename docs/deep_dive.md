@@ -457,84 +457,26 @@ For research and educational use only. Visuals and insights are based on the ISI
 
 ---
 
-### 6.3. Saliency Map Overlay - Sigmoid-Scaled
-
----
-
-This is not the proper way to calculate and displaye saliency. Included for completeness, cntrast, and potential value to expert workflows. This visualization is much less noisy than the previous saliency map because the only hotspots are pixels that most influence the model’s final segmentation decision. This is using the sigmoid-activated output with respect to the input image. Unlike raw saliency maps, which reflect all sensitivity, this map focuses only on what most affects the model’s final probability. The result is cleaner, more focused, and ideally emphasizes the lesion boundary.
-
----
-
-#### What This Tells Us
-- **Lesion boundary:** A thin band of pixels outlines the model’s segmentation decision.
-
-- **Interior & background:** Remain mostly blue (low gradient), showing low influence on the final segmentation decision. The model knows the interior is part of the lesion, of course, but its segmentation decision is based on where the edges are.
-
----
-
-#### Potential Value
-- **Improves interpretability** by aligning attribution with the model’s actual output (post-activation), not just internal activations.
-
-- **Highlights decisive features** rather than noisy sensitivities. 
-
-- **Potential HITL value** in expert review settings when compared and contrasted with proper, raw logit, saliency maps for the same input image.
-
----
-
-#### Disclaimer
-For research and educational use only. Visuals and insights are based on the ISIC 2018 dataset and are not clinically validated.
-
----
-
-#### Saliency Map Overlay - Sigmoid-Scaled - Model 1 - Batch A
-
-![Model 1 - Saliency Map Sigmoid Output](../output/sal_map_model_1_batch_a_1.png)
-
----
-
-#### Observations
-
-Optimally, a well-trained model should not react broadly to irrelevant textures or lighting. Instead, it should focus narrowly on lesion boundaries, fine-tuning its segmentation decisions. We observe this behavior in the majority of images, where segmentation quality is high and saliency hotspots trace the lesion outlines precisely.
-
-This pattern holds across most cases (particularly Images 1, 3, 7, and 8) though some maps are sharper than others.
-
-Image 4 is a notable exception. Here, the saliency map reveals diffuse hotspots concentrated in the top-right region. This is the exact area the model undersegments in its final output. Meanwhile, the central region of the lesion, which the model segments correctly, shows minimal saliency activation.
-
-This contrast suggests the model has already "resolved" the central area with confidence, so it no longer contributes significantly to the gradient. In contrast, the top-right region remains ambiguous, actively influencing the model’s decision-making even in the final layer.
-
-This supports a broader pattern: where saliency is focused, the model is refining its decision. In high-confidence cases, this focus occurs at the lesion boundary and suggest a focus on optimizing precision. In edge cases like Image 4, saliency shifts toward uncertain regions. It is still focused on resolving this area and not on optimizing its final prediction. This results in a generally accurate but imprecise segmentation boundary with the uncertain area specifically under-represented. 
-
----
-
-#### Real-World Use Case
-In a dermatology AI pipeline, this overlay could help clinicians visually confirm the quality of lesion boundaries in low-confidence or borderline cases. If the focus aligns with clinically relevant features, trust is reinforced. If not, it flags potential model failure or edge-case behavior. Together, raw and sigmoid-scaled saliency could offer a full-spectrum view of model behavior. Raw saliency reveals what the model notices, while sigmoid-scaled saliency shows what it actually acts on. This duality could support auditing feature dependence and evaluating attention mechanisms applied at intermediate convolutional layers.
-
----
- 
-#### Disclaimer
-For research and educational use only. Visuals and insights are based on the ISIC 2018 dataset and are not clinically validated.
-
----
-
 ### 6.4. Integrated Gradients Overlay
 
-This visualization highlights the cumulative influence of each pixel on the model’s final segmentation decision, computed by tracing a path from a baseline (blank) image to the actual input. The result is a smoother, more stable attribution map compared to instantaneous saliency techniques. Integrated Gradients don’t just show what the model is sensitive to. They reveal which input features actually caused the prediction, traced along a path from blank input to final decision. 
+This heatmap shows which pixels most influenced the model’s final segmentation, computed by comparing a blank baseline to the actual input. Integrated Gradients emphasize causal contributions to a segmentation decision. Not everything the model notices, like saliency, but only what it acts on.
 
 ---
 
 #### What This Tells Us
 - **Bright, saturated regions:** These pixels consistently contributed to the model’s prediction as the image was progressively revealed and should correspond to the lesion.
 
-- **Dark or desaturated regions:** These pixels had little to no effect on the model’s decision, suggesting they were ignored or discounted. 
+- **Dark or desaturated regions:** These pixels had little to no effect on the model’s decision. 
 
 ---
 
 #### Potential Value
-- **Reduces noise** compared to raw saliency methods, offering more stable attribution maps.
 
-- **Highlights causal contributions** instead of just attention or sensitivity, supporting model explainability during audits.
+- Highlights causal contributions instead of just attention or sensitivity, supporting model explainability during audits.
 
-- **Improves interpretability in edge-cases** where gradients alone may be misleading or noisy.
+- Reveals what drove the prediction, not just what triggered sensitivity.
+
+- Valuable in conjunction with saliency to see early stage activation and what is filtered out in intermediate stages.
 
 ---
 
@@ -545,16 +487,10 @@ This visualization highlights the cumulative influence of each pixel on the mode
 ---
 
 #### Observations
-Unlike what we saw in the raw logits saliency maps, hot spots here do not align with misleading features (hairs, shadows, etc.). We know the model noticed these features, from the raw logits saliency maps, but we also know these features were ultimately judged to be misleading, from the integrated gradients maps. Here we see how robust XAI techniques work together to reveal how models make decisions at a granular level. And we can examine this even further with when we look at the next section, Decision Path Visualization via Layer-wise Grad-CAM.
 
-Most images are remarkably consistent here. High-importance regions (green/yellow clusters) largely coincide with lesion boundaries and internal texture, even in difficult cases. For example, Image 3 shows a tight, centralized attribution corresponding precisely to a small lesion. Images 1, 2, 7, and 8 also show well-localized attribution consistent with lesion contours. Meanwhile, Image 6 exhibits broader but clear attribution, aligning with its mild oversegmentation but precise shape. 
+Most images are remarkably consistent here. High-importance regions (green/yellow clusters) largely coincide with lesion boundaries and internal texture, even in difficult cases. For example, Image 3 shows a tight, centralized attribution corresponding precisely to a small lesion. Images 1, 2, 7, and 8 also show well-localized attribution consistent with lesion contours. Image 6 exhibits broader but clear attribution, aligning with its mild oversegmentation but precise shape. 
 
-Image 4 is diffuse and a clear outlier, however. Most likely due to the presence of two clearly different colors in one lesion. An edge case that can be understood and addressed through input preprocessing, expanding training data, or additional data augmentation. Overall, the integrated gradients confirm the model is prioritizing relevant visual features, and supports prior XAI observations.
-
----
-
-#### Real-World Use Case
-In a dermatology AI pipeline, Integrated Gradients can help validate that a model is grounded in the right lesion features when raw saliency is too noisy or unclear. It can also reveal subtle dependencies on shape, texture, or contrast that affect generalization across skin tones, lighting conditions, or imaging devices. When used alongside saliency and confidence maps, model behavior can be interpreted through three complementary lenses: sensitivity, decision confidence, and causal attribution.
+Image 4 is diffuse and a clear outlier, however. Most likely due to the presence of two clearly different colors in one lesion. An edge case that can be understood and addressed. 
 
 ---
 
@@ -564,45 +500,32 @@ This visualization is for research and educational purposes only. Visuals and in
 ---
 
 ### 6.5. Decision Path Visualization via Layer-wise Grad-CAM
-This visualization illustrates how different parts of an image influence the model’s segmentation decision across its entire architecture. We follow a batch of images from input to final output. At each major stage (encoder, attention bottleneck, decoder, output), we apply Grad-CAM to highlight spatial regions that most strongly affect the model's prediction.
+This technique shows how different parts of an image influence the model’s prediction across its entire architecture. At each stage we apply Grad-CAM to visualize what the model is focusing on at every layer.
 
-These heatmaps reflect class-specific activation relevance, revealing how the model’s internal focus evolves layer by layer and solidifies into a segmentation decision.
+These class activation maps reveal how early features evolve into final segmentation decisions.
 
 ---
 
 #### What This Tells Us
-- **Warm Regions:** Areas of strong positive activation for the predicted class
+- **Warm Regions:** Areas of strong positive activation for the lesion class.
 
 - **Cool Regions:** Areas of low activation.
 
-- **Note:** Different layers focus on different features, especially in the encoder layers. We do not expect to see broad activation during feature extraction. 
+- **Early layers**: Focus on texture and features.
+
+- **Later layers**: Sharpen around lesion boundaries and shape.
 
 ---
 
 #### Potential Value
 
-- **Provides an end-to-end** look at internal activations across any decision the model makes. Rare in modern AI.
+- **End-to-end** interpretability of model behavior.
 
-- **Enables auditability** through analyzing where errors occur or where edge cases deviate from expected behavior. 
+- **Auditability** Track how errors or edge cases emerge during processing. 
 
-- **Trust calibration** helps human experts understand whether the model is reasoning in a way that aligns with clinical or domain-specific logic.
+- **Trust calibration** by confirming that focus aligns with relevant features.
 
-- **Granular model analysis** reveals opportunities for iterative improvement. Unstable stages can be identified and architecture fine tuned.
-
----
-
-#### Real-World Use Case
-Supports auditability and compliance regulation by tracing, from intput to output, a prediction.
-
-Developers can isolate and analyze architecture components to better understand behavior:
-
-Is the attention gate filtering appropriately?
-
-Does the decoder preserve relevant detail?
-
-What changes when the attention mechanism is disabled or modified?
-
-This approach supports HITL workflows, interpretability, and model debugging in regulated or safety-critical domains. 
+- **Granular model analysis** supports architecture refinement by showing unstable layers.
 
 ---
 
@@ -613,9 +536,7 @@ These visualizations are for research and educational purposes only. Visuals and
 
 #### Decision Path Visualization via Layer-wise Grad-CAM - Encoder Layers - Model 1 - Batch A
 
-This first set of heatmaps shows Grad-CAM activations at successive convolutional layers within the encoder layers. The encoder is responsible for progressive feature extraction. The raw input is transformed into increasingly abstract, compressed representations. These layers downsample the input spatially while amplifying features relevant to the task, such as lesion texture, border contrast, and color patterns.
-
-Early encoder layers should focus on low-level visual cues while deeper encoder layers should transition toward more localized semantic regions related to the lesion itself.
+This first set of heatmaps shows Grad-CAM activations at successive convolutional layers within the encoder layers. The encoder extracts progressively abstract features from the raw input.
 
 ---
 
@@ -624,19 +545,16 @@ Early encoder layers should focus on low-level visual cues while deeper encoder 
 ---
 
 ##### Observations
-Across all 8 images, we observe a strong alignment with expectations. Early layers capture texture and fine contrast across the image. Gradually, the focus contracts toward the lesion region. Background, hairs, and lighting artifacts are picked up but increasingly ignored. Most images show precise activations even in early layers. 
 
 The activations for images 1 and 2 are primarily related to hairs and shadows, misleading artifacts. However, both images will ultimately be well-segmented; these features did not contribute to the final output.
 
 Image 3 demonstrates that the encoder handles small, well-defined lesions with high confidence and precision. This is expected, as Model 1 is optimized for Dice performance. It was penalized more for making mistakes on small lesions rather than large lesions. This aligns with our goals for this model. It is unlikely to miss any lesion, whether large or small. However, its segmentation borders for larger lesions may be less precise. This also may explain the undersegmentation in Images 4 and 5, which feature larger lesions.
 
-Early convolutional layers filter raw visual signals, and deeper encoder layers refine focus toward the lesion. Grad-CAM reveals that in most cases, the encoder is forming a solid lesion representation.
-
 ---
 
 #### Decision Path Visualization via Layer-wise Grad-CAM - Attention Bottleneck Layers - Model 1 - Batch A
 
-This visualization highlights activations through the point of maximum compression. The encoder's abstracted features are passed forward to the decoder for reconstruction. In this architecture, the bottleneck also includes an attention gate, a hybrid mechanism that modulates the encoder's skip connections using both additive and multiplicative transformations. Attention is applied here, selectively filtering what information gets passed along skip connections to suppress irrelevant or misleading features and highlight semantically meaningful regions.
+The encoder's abstracted features are passed forward. Attention is applied here, at the bottleneck, selectively filtering what information gets passed along to the decoder for reconstruction.
 
 Activations should be tighter and more class-specific than the encoder. Attention gating should emphasize lesion areas while downplaying background. Ideally, this will correct cases where the encoder under or over attended to features before they are passed to the decoder layers for reconstruction.
 
@@ -651,20 +569,15 @@ Image 3 is clearly an optimal case, as expected. This aligns with the confidence
 
 Images 1, 2, 6, 7, and 8 also show clear, dense activation aligned with the final boundary decision. 
 
-Both images 4 and 5 contain two lesion areas that are of different and contrasting color. The model picks up much of the differently colored region, away from the core, but does not capture all of it. We have identified a possible consistent feature with these 2 edge cases. Additionally, as both are also larger lesions, we expect Model 1, Dice-Optimized, to err on the side of detecting but incompletely segmenting large lesions. Both edge case images benefit from the attention bottleneck, clearly detect the majority of the lesion, and will ultimately draw meaningful but imcomplete boundaries.
-
-The use of both additive and multiplicative attention mechanisms ensures robust filtering. The change in sharpness and focus becomes especially clear in the last layers. In several cases, we observe the map expands relevant detail and fine-tunes the boundary, suppressing noise. This two-step filtering appears effective, as attention meaningfully sharpens class-relevant features. 
-
-Attention gating clearly improves focus and feature quality before decoding. Grad-CAM confirms that attention is being meaningfully applied, especially in the more challenging cases. The lesion becomes clearly highlighted here even in cases where earlier layers were ambiguous.
+Both images 4 and 5 contain two lesion areas that are of different and contrasting color. The model picks up much of the differently colored region, away from the core, but does not capture all of it. We have identified a possible consistent feature with these 2 edge cases. 
 
 ---
 
 #### Decision Path Visualization via Layer-wise Grad-CAM - Decoder Layers - Model 1 - Batch A
 
-This section shows how the model progressively upsamples and refines the spatial representation of the lesion, using the output of the attention bottleneck and the skip connections from earlier encoder layers.
-The decoder’s job is to reconstruct the segmentation mask in high resolution. Decoder layers must integrate low-level spatial features (from encoder) with high-level semantic features (from bottleneck).
+The decoder’s job is to construct the segmentation mask. The decoder combines spatial details with high-level features to reconstruct the segmentation.
 
-This is where we expect the clearest signs that attention worked. If attention succeeded in isolating lesion-relevant features, the decoder should now reassemble them into a precise and well-aligned segmentation boundary. We should see gradually increasing clarity as we move from early layers to later layers. Spatial features should become more detailed and refined with activation maps eventually aligning with the final segmentation shape.
+This is where we expect the clearest signs that attention worked. If attention succeeded in isolating lesion-relevant features, the decoder should now reassemble them into a precise and well-aligned segmentation boundary. We should see gradually increasing clarity as we move from early layers to later layers. 
 
 ![Model 1 - Grad-CAM Decoder Layer Output](../output/layer_dec_model_1_batch_a_1.png)
 
@@ -680,25 +593,19 @@ Image 3 has clear and compact focus throughout.
 
 Images 4 & 5 become increasingly defined, with meaningful boundaries, but boundary detail is slightly underexpressed. 
 
-Decoder heatmaps confirm the impact of attention filtering in the bottleneck as the decoder constructs the final boundary. The lesion shapes in Grad-CAM closely mirror the final segmentation masks, particularly by the later decoder stages. This progression offers compelling evidence that the model "understands" the lesion as a coherent object, rather than simply activating around local features.
-
-The decoder gradually reconstructs the lesion from a compressed and filtered internal representation. The activation heatmaps show that the model’s understanding becomes spatially complete and meaningful here. This stage confirms that the attention bottleneck succeeded in isolating relevant features, and the decoder translated them faithfully into a segmentation decision with valid shape and boundary.
-
 ---
 
 #### Decision Path Visualization via Layer-wise Grad-CAM - Final Layer with Output - Model 1 - Batch A
 
 In this final stage, we examine the Grad-CAM heatmaps for the output layer, which produces the segmentation mask via pixel-wise classification. The output layer applies a sigmoid activation function to generate a probability map. Each pixel gets a confidence score between 0 and 1 for belonging to the lesion class. This output is thresholded, at 0.5 for baseline, to create a binary segmentation mask.
 
-This is the culmination of the encoder’s feature extraction, the attention bottleneck’s filtering, and the decoder’s reconstruction. The output layer should reflect the model’s final decision exactly. 
+This is the culmination of the encoder’s feature extraction, the attention bottleneck’s filtering, and the decoder’s reconstruction. The output layer reflects the model’s final decision. 
 
 ![Model 1 - Grad-CAM Output Layer Output](../output/layer_out_model_1_batch_a_1.png)
 
 ---
 
 ##### Observations
-
-The Grad-CAM maps for the output layer align with the final binary segmentation outputs, as expected.
 
 The model's output for images 1, 2, 7, and 8 aligns very closely with the expert annotation we saw earlier. 
 
@@ -711,17 +618,15 @@ Images 4 & 5 are undersegmented, missing a portion of the lesion. Still the boun
 ---
 
 ##### High-Level Insights
-The Decision Path Visualization offers a full architectural audit trail, confirming the model's internal consistency. It does not guess. It builds its output step by step, preserving and refining relevant features as they move through the network. Misleading early activations are filtered out; class-relevant activations are preserved and amplified, especially after attention is applied.
-
-This process shows that the model is internally coherent. It does not guess, it builds logically to its answer. Even in edge cases where its final decision does not exactly match the expert annotation, there is still signficant meaningful alignment. The segmentation boundary may be the correct shape but slightly larger, or the model makes the same segmentation decision as the expert annotation but fails to extend the boundary on one side far enough. The results are clear from visual inspection, metric calculations, and deeper investigation through XAI techniques. 
+Layer-wise grad-CAM offers a full architectural audit trail, confirming the model's internal consistency. It does not guess. It builds its output step by step, preserving and refining relevant features as they move through the network. Misleading early activations are filtered out; class-relevant activations are preserved and amplified, especially after attention is applied.
 
 We learn the most from image 3, a small lesion, and 4 & 5, edge cases with large lesions. We confirm our model is behaving as expected, in the context of its specialization. It is optimized for cases like image 3 and not optimized for cases like images 4 and 5. 
 
-Even in edge cases where its final decision does not exactly match the expert annotation, there is still signficant meaningful alignment. The segmentation boundary may be the correct shape but slightly larger, or the model makes the same segmentation decision as the expert annotation but fails to extend the boundary on one side far enough. 
+Even in edge cases where the final output diverges from expert annotations, alignment remains strong. The model often captures the correct shape but may slightly under- or over-extend boundaries.
 
-To achieve more accurate segmentation for edge cases like images 4 & 5 we can compensate by using a differently specialized variant model, applying pre-processing to images prior to segmentation, or expanding training on edge case like these with focused expert annotation. 
+To achieve more accurate segmentation for edge cases like images 4 & 5 we can compensate by using a differently specialized variant model, applying pre-processing to images prior to segmentation, or expanding training on edge cases like these with focused expert annotation. 
 
-This output isn't just a heatmap. It’s a transparent reasoning chain confirming that the model is performant, interpretable, and trustworthy. All required for integration into real-world, expert-aligned, high-stakes workflows.
+This output isn't just a heatmap. It’s a transparent reasoning chain confirming that the model is performant, interpretable, and trustworthy. 
 
 ---
 
