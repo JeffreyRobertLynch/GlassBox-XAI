@@ -252,7 +252,7 @@ Building trust in AI systems requires more than clean outputs; it requires **obj
 
 ---
 
-### 5.1. Variant Comparison Segmentation Overlays - All Models - Batch A
+### 5.1. Variant Comparison Segmentation Overlays - Batch A
 Here we visualize the segmentation decisions of all three variant models for comparison. While overall performance is similar, subtle differences in boundaries are present.
 
 ---
