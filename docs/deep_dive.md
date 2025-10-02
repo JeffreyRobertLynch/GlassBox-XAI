@@ -21,7 +21,7 @@ This prototype reflects the capabilities achievable through independent developm
     4.1. [Basic Segmentation Output](#41-basic-segmentation-output)  
     4.2. [Segmentation Overlay](#42-segmentation-overlay)  
 5. [Comparative Model Evaluation](#5-comparative-model-evaluation)  
-    5.1. [Variant Comparison Overlays – Batch A](#51-variant-comparison-overlays--batch-a)  
+    5.1. [Variant Comparison Sementation Overlays – Batch A](#51-variant-comparison-segmentation-overlays--batch-a)  
     5.2. [Model Performance on Test Set](#52-model-performance-on-test-set)  
     5.3. [Confusion Matrices – Test Set](#53-confusion-matrices--test-set)  
 6. [Interpretability & XAI](#6-interpretability--xai)  
