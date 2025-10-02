@@ -26,11 +26,10 @@ This prototype reflects the capabilities achievable through independent developm
     5.3. [Confusion Matrices – Test Set](#53-confusion-matrices--test-set)  
 6. [Interpretability & XAI](#6-interpretability--xai)  
     6.1. [Superpixel Confidence Overlay](#61-superpixel-confidence-overlay)  
-    6.2. [Saliency Map – Raw Logits](#62-saliency-map--raw-logits)  
-    6.3. [Saliency Map – Sigmoid-Scaled](#63-saliency-map--sigmoid-scaled)  
-    6.4. [Integrated Gradients Overlay](#64-integrated-gradients-overlay)  
-    6.5. [Layer-wise Grad-CAM](#65-layer-wise-grad-cam)  
-    6.6. [Full XAI in Practice: Insights](#66-full-xai-in-practice-insights)  
+    6.2. [Saliency Map](#62-saliency-map)  
+    6.3. [Integrated Gradients Overlay](#64-integrated-gradients-overlay)  
+    6.4. [Layer-wise Grad-CAM](#65-layer-wise-grad-cam)  
+    6.5. [Full XAI in Practice: Insights](#66-full-xai-in-practice-insights)  
 7. [Data](#7-data)  
 8. [Models & Metrics](#8-models--metrics)  
 9. [Image Processing Pipeline](#9-image-processing-pipeline)  
@@ -410,7 +409,7 @@ This system is for research and educational use only. Visuals and insights are b
 
 ---
 
-### 6.2. Saliency Map Overlay - Raw Logits
+### 6.2. Saliency Map Overlay
 
 This visualization highlights regions where the model’s output is most sensitive to small changes in the input. Each pixel is colored based on the gradient magnitude of the raw logits (pre-sigmoid output) with respect to the input image.
 
@@ -457,7 +456,7 @@ For research and educational use only. Visuals and insights are based on the ISI
 
 ---
 
-### 6.4. Integrated Gradients Overlay
+### 6.3. Integrated Gradients Overlay
 
 This heatmap shows which pixels most influenced the model’s final segmentation, computed by comparing a blank baseline to the actual input. Integrated Gradients emphasize causal contributions to a segmentation decision. Not everything the model notices, like saliency, but only what it acts on.
 
@@ -499,7 +498,7 @@ This visualization is for research and educational purposes only. Visuals and in
 
 ---
 
-### 6.5. Decision Path Visualization via Layer-wise Grad-CAM
+### 6.4. Decision Path Visualization via Layer-wise Grad-CAM
 This technique shows how different parts of an image influence the model’s prediction across its entire architecture. At each stage we apply Grad-CAM to visualize what the model is focusing on at every layer.
 
 These class activation maps reveal how early features evolve into final segmentation decisions.
@@ -534,7 +533,7 @@ These visualizations are for research and educational purposes only. Visuals and
 
 ---
 
-#### Decision Path Visualization via Layer-wise Grad-CAM - Encoder Layers - Model 1 - Batch A
+#### Layer-wise Grad-CAM - Encoder Layers - Model 1 - Batch A
 
 This first set of heatmaps shows Grad-CAM activations at successive convolutional layers within the encoder layers. The encoder extracts progressively abstract features from the raw input.
 
@@ -630,7 +629,7 @@ This output isn't just a heatmap. It’s a transparent reasoning chain confirmin
 
 ---
 
-### 6.6. Full XAI in Practice
+### 6.5. Full XAI in Practice
 
 In high-stakes fields like medical imaging, it is not sufficient for a model to simply “perform well" in metrics. Trustworthy & Ethical AI must also be interpretable, auditable, and aligned with human expertise. That’s why explainable AI (XAI) is central to this project’s design.
 
